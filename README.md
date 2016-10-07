@@ -143,15 +143,21 @@ req->Sendprompt();
 ```
 
 4. @nsBrowserGlue.js,
-- ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
+ - ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
 - In ContentPermissionPrompt._showPrompt, the request would be recorded by
-```cpp
-Services.perms.addFromPrincipal(.....)
-```
-- the getter of PopupNotifications is at browser.js
-```cpp
-XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
-```
-- PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
+ ```cpp
+ Services.perms.addFromPrincipal(.....)
+ ```
+ - the getter of PopupNotifications is at browser.js
+ ```cpp
+ XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
+ ```
+ - PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
 
-5. 
+5. @browser.xul
+ - would include notification popup UI: panel#notification-popup
+ ```
+ #include popup-notifications.inc
+ ```
+ The file is at browser/base/content/popup-notifications.inc 
+ - the XBL binding for panel#notification-popup is at toolkit/content/widgets/popup.xml#arrowpanel
