@@ -18,5 +18,5 @@
  
  * ###TABS
   - This element contains <tab> in the DOM tree
-  ![alt text](https://github.com/Fischer-L/FirefoxTech/blob/master/img/tabs.png?raw=true)
+  ![alt text]https://github.com/Fischer-L/FirefoxTech/blob/master/img/tabs.png?raw=true
   
