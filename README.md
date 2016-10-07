@@ -165,10 +165,10 @@ req->Sendprompt();
 
 ## How to make a prompt
 1. Get the nsIPromptService service
-```javascript
-var promptSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+ ```javascript
+ var promptSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
-```
+ ```
 
 2. Call
  - promptSvc.confirm for simple OK/Cancel prompt
