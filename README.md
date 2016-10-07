@@ -12,11 +12,11 @@
  - This element even manage tabs so, for example of adding a tab,  call this.addTab
 
 * ###browser
- - Under <tabbrowser> in the DOM tree
- - Similar to <iframe> except that it holds a page history and contains additional methods to manipulate the currently displayed page.
+ - Under ```<tabbrowser>``` in the DOM tree
+ - Similar to ```<iframe>``` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
  - Website is rendered inside ```<browser>```
  
 * ###tabs
- - This element contains <tab> in the DOM tree
+ - This element contains ```<tab>``` in the DOM tree
  ![tabs image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tabs.png)
   
