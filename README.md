@@ -1,6 +1,6 @@
 # FirefoxTech
-
-
+ 
+ 
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
@@ -25,9 +25,8 @@
  - A single tab 
  
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
-
-
-
+ 
+ 
 ##Where is the update history record stored
 Look for active-update.xml, updates.xml, and updates folder under 
 
@@ -37,9 +36,8 @@ Look for active-update.xml, updates.xml, and updates folder under
 
 ###In Linux
 - Mach-built browser update records dir: /home/fischer/Projects/gecko/objdir-front-end/dist/bin
-
-
-
+ 
+ 
 ##How to inject a mock JS XPCOM component
 ```javascript
     // Set up
