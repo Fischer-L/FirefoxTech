@@ -18,8 +18,21 @@
  
 * ###tabs
  - This element contains ```<tab>``` in the DOM tree
+ 
  ![tabs image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tabs.png)
   
 * ###tab
  - A single tab 
+ 
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
+
+
+##Where is the update history record stored
+Look for active-update.xml, updates.xml, and updates folder under 
+
+###In MAC
+- Developer Edition update records dir: "/Users/USERNAME/Library/Caches/Mozilla/updates/Applications/FirefoxDeveloperEdition"
+- Mach-built browser update files dir: /Users/USERNAME/Library/Caches/Mozilla/updates/Users/foxbrush/Projects/gecko/objdir-frontend/dist/Nightly
+
+###In Linux
+- Mach-built browser update records dir: /home/fischer/Projects/gecko/objdir-front-end/dist/bin
