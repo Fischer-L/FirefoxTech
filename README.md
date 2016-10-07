@@ -135,7 +135,7 @@ The mapping tables are at
  ```
 
 2. @nsIContentPermissionRequest::GetTypes implementation
-- such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
+ - such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
 
 3. @nsContentPermissionUtils::AskPermission, after  preparation, would call RemotePermissionRequest::Sendprompt
  ```cpp
@@ -144,7 +144,7 @@ The mapping tables are at
 
 4. @nsBrowserGlue.js,
  - ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
-- In ContentPermissionPrompt._showPrompt, the request would be recorded by
+ - In ContentPermissionPrompt._showPrompt, the request would be recorded by
   ```cpp
   Services.perms.addFromPrincipal(.....)
   ```
