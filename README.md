@@ -34,11 +34,11 @@ Look for active-update.xml, updates.xml, and updates folder under
 - Developer Edition update records dir: "/Users/USERNAME/Library/Caches/Mozilla/updates/Applications/FirefoxDeveloperEdition"
 - Mach-built browser update files dir: /Users/USERNAME/Library/Caches/Mozilla/updates/Users/foxbrush/Projects/gecko/objdir-frontend/dist/Nightly
 
-###In Linux
+### In Linux
 - Mach-built browser update records dir: /home/fischer/Projects/gecko/objdir-front-end/dist/bin
  
  
-##How to inject a mock JS XPCOM component
+## How to inject a mock JS XPCOM component
 ```javascript
     // Set up
     const { classes: Cc, interfaces: Ci, manager: Cm, utils: Cu, results: Cr } = Components;
@@ -97,3 +97,12 @@ Look for active-update.xml, updates.xml, and updates folder under
     // Finally unregister 
     mockUpdateManager.unregister();
 ```
+
+
+## How to redirect about: page to a real page
+The mapping tables are at
+- browser/components/about/AboutRedirector.cpp
+- docshell/base/nsAboutRedirector.cpp
+
+
+## How accesskey is handled
