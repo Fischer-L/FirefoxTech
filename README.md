@@ -41,7 +41,7 @@ Look for active-update.xml, updates.xml, and updates folder under
 
 
 ##How to inject a mock JS XPCOM component
-```javaascript
+```javascript
     // Set up
     const { classes: Cc, interfaces: Ci, manager: Cm, utils: Cu, results: Cr } = Components;
     Cu.import('resource://gre/modules/XPCOMUtils.jsm');
