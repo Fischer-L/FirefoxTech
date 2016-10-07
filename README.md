@@ -14,7 +14,7 @@
 * ###browser
  - Under <tabbrowser> in the DOM tree
  - Similar to <iframe> except that it holds a page history and contains additional methods to manipulate the currently displayed page.
- - Website is rendered inside <browser>
+ - Website is rendered inside ```<browser>```
  
 * ###tabs
  - This element contains <tab> in the DOM tree
