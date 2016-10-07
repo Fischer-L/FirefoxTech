@@ -11,4 +11,12 @@
  - this.tabContainer is <tabs> but <tabs> is not under <tabbrowser> in the DOM tree
  - This element even manage tabs so, for example of adding a tab,  call this.addTab
 
-### * browser
+* ###browser
+ - Under <tabbrowser> in the DOM tree
+ - Similar to <iframe> except that it holds a page history and contains additional methods to manipulate the currently displayed page.
+ - Website is rendered inside <browser>
+ 
+ * ###TABS
+  - This element contains <tab> in the DOM tree
+  ![alt text](https://github.com/Fischer-L/FirefoxTech/blob/master/img/tabs.png?raw=true)
+  
