@@ -8,16 +8,16 @@
  - Bindings: browser/base/content/tabbrowser.xml#tabbrowser
  - This element contains `<browser>`
  - this.selectedBrowser is `<browser>`
- - this.tabContainer is ```<tabs>``` but ```<tabs>``` is not under ```<tabbrowser>``` in the DOM tree
+ - this.tabContainer is `<tabs>` but `<tabs>` is not under `<tabbrowser>` in the DOM tree
  - This element even manage tabs so, for example of adding a tab,  call this.addTab
 
 * ###browser
- - Under ```<tabbrowser>``` in the DOM tree
- - Similar to ```<iframe>``` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
- - Website is rendered inside ```<browser>```
+ - Under `<tabbrowser>` in the DOM tree
+ - Similar to `<iframe>` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
+ - Website is rendered inside `<browser>`
  
 * ###tabs
- - This element contains ```<tab>``` in the DOM tree
+ - This element contains `<tab>` in the DOM tree
  
  ![tabs image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tabs.png)
   
@@ -133,3 +133,25 @@ The mapping tables are at
 ```cpp
 nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
 ```
+
+2. @nsIContentPermissionRequest::GetTypes implementation
+- such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
+
+3. @nsContentPermissionUtils::AskPermission, after  preparation, would call RemotePermissionRequest::Sendprompt
+```cpp
+req->Sendprompt();
+```
+
+4. @nsBrowserGlue.js,
+- ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
+- In ContentPermissionPrompt._showPrompt, the request would be recorded by
+```cpp
+Services.perms.addFromPrincipal(.....)
+```
+- the getter of PopupNotifications is at browser.js
+```cpp
+XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
+```
+- PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
+
+5. 
