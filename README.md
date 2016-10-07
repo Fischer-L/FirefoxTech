@@ -130,35 +130,35 @@ The mapping tables are at
 
 ## How does notification popup for permission request show
 1. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types
-```cpp
-nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
-```
+ ```cpp
+ nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
+ ```
 
 2. @nsIContentPermissionRequest::GetTypes implementation
 - such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
 
 3. @nsContentPermissionUtils::AskPermission, after  preparation, would call RemotePermissionRequest::Sendprompt
-```cpp
-req->Sendprompt();
-```
+ ```cpp
+ req->Sendprompt();
+ ```
 
 4. @nsBrowserGlue.js,
  - ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
 - In ContentPermissionPrompt._showPrompt, the request would be recorded by
- ```cpp
- Services.perms.addFromPrincipal(.....)
- ```
+  ```cpp
+  Services.perms.addFromPrincipal(.....)
+  ```
  - the getter of PopupNotifications is at browser.js
- ```cpp
- XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
- ```
+  ```cpp
+  XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
+  ```
  - PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
 
 5. @browser.xul
  - would include notification popup UI: panel#notification-popup
- ```
- #include popup-notifications.inc
- ```
+  ```
+  #include popup-notifications.inc
+  ```
   The file is at browser/base/content/popup-notifications.inc 
  - the XBL binding for panel#notification-popup is at toolkit/content/widgets/popup.xml#arrowpanel
 
