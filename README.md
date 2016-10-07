@@ -6,8 +6,8 @@
 
 * ###Tabbrowser
  - Bindings: browser/base/content/tabbrowser.xml#tabbrowser
- - This element contains ```<browser>```
- - this.selectedBrowser is ```<browser>```
+ - This element contains `<browser>`
+ - this.selectedBrowser is `<browser>`
  - this.tabContainer is ```<tabs>``` but ```<tabs>``` is not under ```<tabbrowser>``` in the DOM tree
  - This element even manage tabs so, for example of adding a tab,  call this.addTab
 
@@ -106,3 +106,30 @@ The mapping tables are at
 
 
 ## How accesskey is handled
+### Register accesskey
+1. Element registers accesskey on init or at attrribute changed
+ - For example, at nsGenericHTMLElement::RegUnRegAccessKey and at nsXULLabelFrame::RegUnregAccessKey, would call EventStateManager::RegisterAccessKey
+ - Please seach RegUnRegAccessKey and RegUnregAccessKey for more elements
+ 
+2. EventStateManager saves registered elements
+ - At EventStateManager::RegisterAccessKey, elements would be stored at mAccessKeys
+ 
+### Dispatching
+1. Handle accesskey event
+ - EventStateManager::HandleAccessKey handles accesskey event, would call EventStateManager::ExecuteAccessKey
+ 
+2. Find out the right accesskey target element
+ - At EventStateManager::ExecuteAccessKey, would loop registered elements inside mAccessKeys to find the right target
+ 
+3. Turn accesskey into click event
+ - At EventStateManager::ExecuteAccessKey, once find the accesskey target element call PerformAccesskey on the target element
+ - For example, at nsGenericHTMLElement::PerformAccesskey, would call DispatchSimulatedClick to dispatch a simulated click event
+ - For example, at nsXULElement::PerformAccesskey, would call ClickWithInputSource to dispatch simulated mouse events
+ 
+4. Element receives click event and perform jobs.
+
+## How does notification popup for permission request show
+1. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types
+```cpp
+nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
+```
