@@ -179,3 +179,9 @@ The mapping tables are at
  - toolkit/components/prompts/src/nsPrompter.js
  - embedding/components/windowwatcher/nsIPromptService.idl
  - embedding/components/windowwatcher/nsIPromptService2.idl
+
+
+## What is the flag defining the RELEASE and BETA build
+- RELEASE_OR_BETA def
+- In toolkit/modules/AppConstants.jsm, the AppConstants holds the build flag, like, NIGHTLY_BUILD, RELEASE_OR_BETA etc.
+- https://wiki.mozilla.org/Platform/Channel-specific_build_defines
