@@ -188,6 +188,7 @@ The mapping tables are at
 
 
 ## eTLD
+- The IDL is at netwerk/dns/nsIEffectiveTLDService.idl
 - The service implementation is at netwerk/dns/nsEffectiveTLDService.cpp
 - The contract is 
   - Components.classes["@mozilla.org/network/effective-tld-service;1"].getService(Components.interfaces.nsIEffectiveTLDService);
