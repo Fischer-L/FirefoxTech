@@ -185,3 +185,13 @@ The mapping tables are at
 - RELEASE_OR_BETA def
 - In toolkit/modules/AppConstants.jsm, the AppConstants holds the build flag, like, NIGHTLY_BUILD, RELEASE_OR_BETA etc.
 - https://wiki.mozilla.org/Platform/Channel-specific_build_defines
+
+
+## eTLD
+- The service implementation is at netwerk/dns/nsEffectiveTLDService.cpp
+- The contract is 
+  - Components.classes["@mozilla.org/network/effective-tld-service;1"].getService(Components.interfaces.nsIEffectiveTLDService);
+  - XPCOMUtils.defineLazyServiceGetter({}, "@mozilla.org/network/effective-tld-service;1", "nsIEffectiveTLDService"); 
+- Accessible from Services.eTLD at Services.jsm
+
+
