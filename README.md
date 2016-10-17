@@ -196,3 +196,23 @@ The mapping tables are at
 - Accessible from Services.eTLD at Services.jsm
 
 
+## How dose mPermissionTable get put entries
+1. nsPermissionManager::Init [1]
+2.  nsPermissionManager::InitDB [2]
+3. nsPermissionManager::Import [3]
+   => Here import permission file
+4. nsPermissionManager::_DoImport [4]
+   => Here, read line，loop permissions
+  4-1. Go with UpgradeHostToOriginAndInsert then AddInternal [5] -> [6] -> [7]
+  or
+  4-2 Directly call AddInterna [8]
+
+[1] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#787
+[2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#843
+[3] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2608
+[4] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2668
+[5] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2722
+[6] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#425
+[7] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#285
+[8] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2747
+
