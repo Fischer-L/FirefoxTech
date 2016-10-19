@@ -1,6 +1,25 @@
 # FirefoxTech
  
- 
+## Printing Strings
+- xxxCString means 8-bit character strings, others 16-bit
+
+- JS string is 16-bit but C++ sting is 8 bit
+
+- UTF-8 <--> UTF-16 in Gecko
+  - NS_ConvertUTF16toUTF8 is a class inheriting nsAutoCString and receives nsAString& for constructing
+  - NS_ConvertUTF8toUTF16 is a class inheriting nsAutoString and receives nsACString& for constructing
+
+- How to print string
+  1. Create UTF-8 string from UTF-16 string (skip if already UTF-8)
+     ```cpp
+       NS_ConvertUTF16toUTF8 a_ns_c_string(a_ns_a_string)
+     ```
+  2. Get char_type* to print
+     ```cppp
+       fprintf(stderr, "%s", a_ns_c_string);
+     ```
+
+
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
