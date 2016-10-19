@@ -19,7 +19,7 @@
   2. Get char_type* to print
   
      ```c++
-       fprintf(stderr, "%s", a_ns_c_string);
+       fprintf(stderr, "%s", a_ns_c_string.get());
      ```
 
 
