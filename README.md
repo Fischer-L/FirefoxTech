@@ -11,11 +11,14 @@
 
 - How to print string
   1. Create UTF-8 string from UTF-16 string (skip if already UTF-8)
-     ```cpp
+  
+     ```c++
        NS_ConvertUTF16toUTF8 a_ns_c_string(a_ns_a_string)
      ```
+     
   2. Get char_type* to print
-     ```cppp
+  
+     ```c++
        fprintf(stderr, "%s", a_ns_c_string);
      ```
 
