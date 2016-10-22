@@ -248,3 +248,50 @@ The mapping tables are at
 
 [8] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2747
 
+
+## How to remove http cache by uri
+1. Get nsICacheStorageService [1][2]. Accessible thru `Services.cache2` [3].
+
+2. Get cache storage [4][5] of disk and of memory thru nsICacheStorageService.
+  ```javascript
+  var memStorage = Services.cache2.memoryCacheStorage(LoadContextInfo.default);
+  var diskStorage = Services.cache2.diskCacheStorage(LoadContextInfo.default, false);
+  ```
+  
+3. Enum caches to filter out target cache by uri and then remove
+  ```javascript
+  const TARGET_HOST = "www.foo.com";
+  var getVisitor = function (storage) {
+    var _targets = [];
+    return { // This is nsICacheStorageVisitor[6]
+      onCacheEntryInfo: function (uri, IdEnhance, dataSize, fetchCount, lastModified, expire, pinned) {
+       if (uri.host = TARGET_HOST) _targets.push({ uri: uri, idEnhance: idEnhance });
+      },
+      onCacheEntryVisitCompleted: function () {
+        if (_targets.length > 0) {
+          _targets.forEach(t => {
+            store.asyncDoomURI(t.uri, t.IdEnhance, { // This is nsICacheEntryDoomCallback [7]
+              onCacheEntryDoomed: function (errCode) { }
+            });
+          });
+        }
+      }
+    }
+  };
+  memStorage.asyncVisitStorage(getVisitor(memStorage), true);
+  diskStorage.asyncVisitStorage(getVisitor(diskStorage), true);
+  ```
+
+[1] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/CacheStorageService.cpp
+
+[2] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheStorageService.idl
+
+[3] https://dxr.mozilla.org/mozilla-central/source/toolkit/modules/Services.jsm
+
+[4] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/CacheStorage.cpp
+
+[5] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheStorage.idl
+
+[6] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheStorageVisitor.idl
+
+[7] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheEntryDoomCallback.idl
