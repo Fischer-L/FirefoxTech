@@ -268,15 +268,13 @@ The mapping tables are at
        if (uri.host = TARGET_HOST) _targets.push({ uri: uri, idEnhance: idEnhance });
       },
       onCacheEntryVisitCompleted: function () {
-        if (_targets.length > 0) {
-          _targets.forEach(t => {
-            store.asyncDoomURI(t.uri, t.IdEnhance, { // This is nsICacheEntryDoomCallback [7]
-              onCacheEntryDoomed: function (errCode) { }
-            });
+        _targets.forEach(t => {
+          store.asyncDoomURI(t.uri, t.IdEnhance, { // This is nsICacheEntryDoomCallback [7]
+            onCacheEntryDoomed: function (errCode) { }
           });
-        }
+        });
       }
-    }
+    };
   };
   memStorage.asyncVisitStorage(getVisitor(memStorage), true);
   diskStorage.asyncVisitStorage(getVisitor(diskStorage), true);
