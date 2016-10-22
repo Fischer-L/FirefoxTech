@@ -249,6 +249,10 @@ The mapping tables are at
 [8] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2747
 
 
+## Where is http cahce stored
+- gecko/objdir-front-end/tmp/scratch_user/cache2/entries
+
+
 ## How to remove http cache by uri
 1. Get nsICacheStorageService [1][2]. Accessible thru `Services.cache2` [3].
 
