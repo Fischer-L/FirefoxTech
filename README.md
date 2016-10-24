@@ -269,7 +269,7 @@ The mapping tables are at
     var _targets = [];
     return { // This is nsICacheStorageVisitor[6]
       onCacheEntryInfo: function (uri, IdEnhance, dataSize, fetchCount, lastModified, expire, pinned) {
-       if (uri.host = TARGET_HOST) _targets.push({ uri: uri, idEnhance: idEnhance });
+       if (uri.host == TARGET_HOST) _targets.push({ uri: uri, idEnhance: idEnhance });
       },
       onCacheEntryVisitCompleted: function () {
         _targets.forEach(t => {
