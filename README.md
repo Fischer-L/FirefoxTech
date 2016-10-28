@@ -297,3 +297,10 @@ The mapping tables are at
 [6] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheStorageVisitor.idl
 
 [7] https://dxr.mozilla.org/mozilla-central/source/netwerk/cache2/nsICacheEntryDoomCallback.idl
+
+
+## Align element in XUL
+- Vertical Alignment:   use `hbox` with `align` attribute or `-moz-box-align` CSS property
+- Horizontal Alignment: use `vbox` with `align` attribute or `-moz-box-align` CSS property
+[1] https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Attribute/align
+
