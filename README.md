@@ -302,5 +302,6 @@ The mapping tables are at
 ## Align element in XUL
 - Vertical Alignment:   use `hbox` with `align` attribute or `-moz-box-align` CSS property
 - Horizontal Alignment: use `vbox` with `align` attribute or `-moz-box-align` CSS property
+
 [1] https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Attribute/align
 
