@@ -348,9 +348,23 @@ appCaches.perms.forEach(p => {
   for (let group of groups) {
     let uri = Services.io.newURI(group, null, null);
     if (perm.matchesURI(uri, true)) {
-      let cache = cacheService.getActiveCache(group); 
+      let cache = cacheService.getActiveCache(group);
+      // Could useDownloadUtils.convertByteUnits in DownloadUtils.jsm to convert usage into meaningful size info
       appCaches.usages[appCaches.usages.length] += cache.usage;
     }
   }
 });
 ```
+
+## Http cache disk usage
+- Using `CacheStorageService::AsyncGetDiskConsumption`
+  - Underneath it uses `CacheIndex->mIndexStats.Size()`
+  - Would get 2.6 MB
+
+- Using retunred `consumption` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheStorageInfo`
+  - Underneath it loops `CacheIndex->mFrecencyArray.Iter()` to get each file size
+  - Would get 2.5 MB
+  
+- Summing up retunred `dataSize` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheEntryInfo`
+  - Underneath it uses `CacheEntry::GetDataSize` to get file size or `CacheFileMetadata->Offset()` to get from file metadta
+  - Would get 2.0 MB
