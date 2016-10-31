@@ -335,7 +335,7 @@ var groups = cacheService.getGroups();
 
 // Pick out app cache of group for each permission and then get usage
 appCaches.perms.forEach(p => {
-  if (!appCaches.usages[appCaches.usages.length]) appCaches.usages[appCaches.usages.length] = 0;
+  appCaches.usages[appCaches.usages.length] = 0;
   // XXX:
   // Here we match one permission against multiple groups. Why?
   // Consider this case:
