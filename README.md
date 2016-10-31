@@ -335,9 +335,16 @@ var groups = cacheService.getGroups();
 
 // Pick out app cache of group for each permission and then get usage
 appCaches.perms.forEach(p => {
-
   if (!appCaches.usages[appCaches.usages.length]) appCaches.usages[appCaches.usages.length] = 0;
-  
+  // XXX:
+  // Here we match one permission against multiple groups. Why?
+  // Consider this case:
+  // There is one site, http://codebits.glennjones.net, which has 3 appcache manifest files:
+  //   http://codebits.glennjones.net/appcache/network/manifest01.appcache#,
+  //   http://codebits.glennjones.net/appcache/network/manifest02.appcache#,
+  //   http://codebits.glennjones.net/appcache/network/manifest03.appcache#.
+  // Then there will be 3 app cache gruops and one permission.
+  // All the usages of those 3 groups should be accounted under one permission for http://codebits.glennjones.net
   for (let group of groups) {
     let uri = Services.io.newURI(group, null, null);
     if (perm.matchesURI(uri, true)) {
