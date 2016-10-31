@@ -305,3 +305,45 @@ The mapping tables are at
 
 [1] https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Attribute/align
 
+
+## How to get app cache usage of each origin
+```javascript
+var appCaches = {
+  perms: [],
+  usages: []
+};
+
+// 1. Get nsIPermissionManager
+var pm = Components.classes["@mozilla.org/permissionmanager;1"].getService(Components.interfaces.nsIPermissionManager);
+
+// 2. Get permission enumeraotr
+var enumerator = pm.enumerator;
+
+// 3. Enum "offline-app" permissions
+while (enumerator.hasMoreElements()) {
+  var perm = enumerator.getNext().QueryInterface(Components.interfaces.nsIPermission);
+  if (perm.type == "offline-app" &&
+      perm.capability != Components.interfaces.nsIPermissionManager.DEFAULT_ACTION &&
+      perm.capability != Components.interfaces.nsIPermissionManager.DENY_ACTION) {
+    appCaches.perms.push(perm);
+  }     
+}
+
+// 4. Get app cache group with nsIApplicationCacheService
+var cacheService = Cc["@mozilla.org/network/application-cache-service;1"].getService(Ci.nsIApplicationCacheService);
+var groups = cacheService.getGroups();
+
+// Pick out app cache of group for each permission and then get usage
+appCaches.perms.forEach(p => {
+
+  if (!appCaches.usages[appCaches.usages.length]) appCaches.usages[appCaches.usages.length] = 0;
+  
+  for (let group of groups) {
+    let uri = Services.io.newURI(group, null, null);
+    if (perm.matchesURI(uri, true)) {
+      let cache = cacheService.getActiveCache(group); 
+      appCaches.usages[appCaches.usages.length] += cache.usage;
+    }
+  }
+});
+```
