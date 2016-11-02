@@ -357,14 +357,47 @@ appCaches.perms.forEach(p => {
 ```
 
 ## Http cache disk usage
-- Using `CacheStorageService::AsyncGetDiskConsumption`
+1. Using `CacheStorageService::AsyncGetDiskConsumption`
   - Underneath it uses `CacheIndex->mIndexStats.Size()`
-  - Would get 2.6 MB
+  - Would get the most usage (including all overhead costs)
 
-- Using retunred `consumption` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheStorageInfo`
+2. Using retunred `consumption` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheStorageInfo`
   - Underneath it loops `CacheIndex->mFrecencyArray.Iter()` to get each file size
-  - Would get 2.5 MB
+  - Would get the 2nd most usage (including less overhead costs)
   
-- Summing up retunred `dataSize` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheEntryInfo`
+3. Summing up retunred `dataSize` by `diskStorage.asyncVisitStorage` with `nsICacheStorageVisitor::onCacheEntryInfo`
   - Underneath it uses `CacheEntry::GetDataSize` to get file size or `CacheFileMetadata->Offset()` to get from file metadta
-  - Would get 2.0 MB
+  - Would get the least usage (including the least overhead costs), around 80% of the 1st method
+  
+
+## Enum permissions
+```javascript
+// Get the nsIPermissionManager service (Could get from Services.perms in Services.jsm as well)
+var permMgr = Cc["@mozilla.org/permissionmanager;1"].getService(Ci.nsIPermissionManager) 
+
+// Get the permission enumerator
+var e = permMgr.enumerator; // This is a getter fn not property
+
+// Loop permissions
+var p;
+while (e.hasMoreElements()) {
+  p = e.getNext();
+  // For exmaple, test the geo permission.
+  var res = Services.perms.testExactPermissionFromPrincipal(p.principal, "geo");
+  switch (res) {
+    case Ci.nsIPermissionManager.ALLOW_ACTION:
+      // The case that user always allows
+    break;
+    
+    case Ci.nsIPermissionManager.DENY_ACTION:
+      // The case that user always denys
+    break;
+    
+    case Ci.nsIPermissionManager.UNKNOWN_ACTION:
+      // The case that the permission hasn't been prmopted to user
+    break;
+  }
+}
+
+```
+
