@@ -250,7 +250,7 @@ The mapping tables are at
 
 
 ## Where is http cahce stored
-- gecko/objdir-front-end/tmp/scratch_user/cache2/entries
+- Check out about:cache
 
 
 ## How to remove http cache by uri
