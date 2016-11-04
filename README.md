@@ -401,3 +401,14 @@ while (e.hasMoreElements()) {
 
 ```
 
+## Add permission
+```javascript
+
+// 1. Create principal for origin [1]
+var principal = Services.scriptSecurityManager.createCodebasePrincipal("https://www.foo.com");
+
+// 2. Add from principal, say, for "geo" permission
+Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_ACTION);
+
+// [1] https://dxr.mozilla.org/mozilla-central/source/caps/nsIScriptSecurityManager.idl#193
+```
