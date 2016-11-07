@@ -427,4 +427,5 @@ Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_
 4. After the all internal operations are done, it will call `nsPermissionManager::NotifyObservers` to notify observers.
 
 [1] https://dxr.mozilla.org/mozilla-central/source/netwerk/base/nsIPermissionManager.idl
+
 [2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp
