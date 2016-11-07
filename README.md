@@ -418,10 +418,7 @@ Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_
 
 
 ## How is permission removed
-1. Remove by permission or uri or principal using `nsIPermissionManager` [1], say, by permission:
-```javascript
-Services.perms.removePermission(permission);
-```
+1. Remove by permission or uri or principal using `nsIPermissionManager` [1].
 
 2. In nsPermissionManager.cpp [2], it all goes to `nsPermissionManager::RemoveFromPrincipal` actually.
 
