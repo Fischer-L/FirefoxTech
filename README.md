@@ -29,9 +29,9 @@
 * ###Tabbrowser
  - Bindings: browser/base/content/tabbrowser.xml#tabbrowser
  - This element contains `<browser>`
- - this.selectedBrowser is `<browser>`
- - this.tabContainer is `<tabs>` but `<tabs>` is not under `<tabbrowser>` in the DOM tree
- - This element even manage tabs so, for example of adding a tab,  call this.addTab
+ - `this.selectedBrowser` is `<browser>`
+ - `this.tabContainer` is `<tabs>` but `<tabs>` is not under `<tabbrowser>` in the DOM tree
+ - This element even manage tabs so, for example of adding a tab, call `this.addTab`
 
 * ###browser
  - Under `<tabbrowser>` in the DOM tree
@@ -415,3 +415,19 @@ Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_
 
 // [1] https://dxr.mozilla.org/mozilla-central/source/caps/nsIScriptSecurityManager.idl#193
 ```
+
+
+## How is permission removed
+1. Remove by permission or uri or principal using `nsIPermissionManager` [1], say, by permission:
+```javascript
+Services.perms.removePermission(permission);
+```
+
+2. In nsPermissionManager.cpp [2], it all goes to `nsPermissionManager::RemoveFromPrincipal` actually.
+
+3. In `RemoveFromPrincipal`, in fact it doesn't remove BUT change the permssion action to `nsIPermissionManager::UNKNOWN_ACTION` with the call to `nsPermissionManager::AddInternal`.
+
+4. After the all internal operations are done, it will call `nsPermissionManager::NotifyObservers` to notify observers.
+
+[1] https://dxr.mozilla.org/mozilla-central/source/netwerk/base/nsIPermissionManager.idl
+[2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp
