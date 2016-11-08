@@ -60,6 +60,41 @@ Look for active-update.xml, updates.xml, and updates folder under
 - Mach-built browser update records dir: /home/fischer/Projects/gecko/objdir-front-end/dist/bin
  
  
+## How to load JS file as JSM module
+1. Create a JSM module to load the target JS file, for example, Sanitizer.jsm:
+```javascript
+"use strict";
+
+this.EXPORTED_SYMBOLS = ["Sanitizer"];
+
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+
+var scope = {};
+Cc["@mozilla.org/moz/jssubscript-loader;1"].getService(Ci.mozIJSSubScriptLoader)
+ .loadSubScript("chrome://browser/content/sanitize.js", scope);
+
+this.Sanitizer = scope.Sanitizer;
+```
+
+2. Declare Sanitizer.jsm in the moz.build
+```javascript
+EXTRA_JS_MODULES += [
+  // other JSMs...
+  'Sanitizer.jsm',
+  // other JSMs...
+]
+```
+
+3. Create the target JS file
+```javascript
+// Include some JSMs
+
+function Sanitizer() {
+  // Do what we want...
+}
+```
+
+
 ## How to inject a mock JS XPCOM component
 ```javascript
     // Set up
