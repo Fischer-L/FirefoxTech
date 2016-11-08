@@ -61,7 +61,23 @@ Look for active-update.xml, updates.xml, and updates folder under
  
  
 ## How to load JS file as JSM module
-1. Create a JSM module to load the target JS file, for example, Sanitizer.jsm:
+1. Create the target JS file, like, browser/base/content/sanitize.js
+  ```javascript
+  // Include some JSMs
+
+  function Sanitizer() {
+    // Do what we want...
+  }
+  ```
+  
+2. Register sanitize.js in broswer/base/jar.mn 
+  ```
+  # Other files declaratons...
+  content/browser/sanitize.js     (content/sanitize.js)
+  # Other files declaratons...
+  ```
+  
+3. Create a JSM module to load the target JS file, like, browser/modules/Sanitizer.jsm:
   ```javascript
   "use strict";
 
@@ -76,22 +92,13 @@ Look for active-update.xml, updates.xml, and updates folder under
   this.Sanitizer = scope.Sanitizer;
   ```
 
-2. Declare Sanitizer.jsm in the moz.build
+4. Register Sanitizer.jsm in browser/modules/moz.build
   ```javascript
   EXTRA_JS_MODULES += [
     // other JSMs...
     'Sanitizer.jsm',
     // other JSMs...
   ]
-  ```
-
-3. Create the target JS file
-  ```javascript
-  // Include some JSMs
-
-  function Sanitizer() {
-    // Do what we want...
-  }
   ```
 
 
