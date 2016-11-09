@@ -233,6 +233,11 @@ The mapping tables are at
  var promptSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
  ```
+ 
+ - The nsIPromptService is defined at
+   - toolkit/components/prompts/src/nsPrompter.js
+   - embedding/components/windowwatcher/nsIPromptService.idl
+   - embedding/components/windowwatcher/nsIPromptService2.idl
 
 2. Call
  - promptSvc.confirm for simple OK/Cancel prompt
@@ -270,10 +275,13 @@ The mapping tables are at
      );
    ```
 
-3. The nsIPromptService is defined at
- - toolkit/components/prompts/src/nsPrompter.js
- - embedding/components/windowwatcher/nsIPromptService.idl
- - embedding/components/windowwatcher/nsIPromptService2.idl
+3. Customized prompt
+  - Use `Window.openDialog` [1]
+  - Example: PlacesUIUtils.showBookmarkDialog [2]
+
+  [1] https://developer.mozilla.org/en-US/docs/Web/API/Window/openDialog
+  
+  [2] https://dxr.mozilla.org/mozilla-central/source/browser/components/places/PlacesUIUtils.jsm#638
 
 ## What is the flag defining the RELEASE and BETA build
 - RELEASE_OR_BETA def
