@@ -252,7 +252,7 @@ The mapping tables are at
        // This says the default button is the right-most button
        Services.prompt.BUTTON_POS_0_DEFAULT;
    
-     // The button 1 and 2 are system button so just set null
+     // The button 1 and 2 use system button labels so just set null
      var btnLabels = [ "Button 0 Label", null, null ];
    
      // If no checkbox, set to null
@@ -264,8 +264,8 @@ The mapping tables are at
    
      // It user clicks the button 0, then the result is 0. If clicking the button 1, then 1 returned...
      var result = Services.prompt.confirmEx(
-       window, "Prompt Title", "Prompt descriptions", flags, 
-       btnLabels[0], btnLabels[1], btnLabels[2], checkBoxLabel, checkBoxValue
+        window, "Prompt Title", "Prompt descriptions", flags, 
+        btnLabels[0], btnLabels[1], btnLabels[2], checkBoxLabel, checkBoxValue
      );
    ```
 
