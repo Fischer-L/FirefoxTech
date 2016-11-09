@@ -238,12 +238,41 @@ The mapping tables are at
  - promptSvc.confirm for simple OK/Cancel prompt
  - promptSvc.confirmEx for different button labels prompt (by using flags param)
  - etc…
+   ```javascript
+   var flags = 
+     // This says the right-most button label is a given string 
+     (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) + 
+     
+     // This says the middle button label is the system "CANCEL" string
+     (Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1) + 
+     
+     // This says the left-most button label is the system "OK" string
+     (Services.prompt.BUTTON_TITLE_OK * Services.prompt.BUTTON_POS_2) + 
+     
+     // This says the default button is the right-most button
+     Services.prompt.BUTTON_POS_0_DEFAULT;
+   
+   // The button 1 and 2 are system button so just set null
+   var btnLabels = [ "Button 0 Label", null, null ];
+   
+   // If no checkbox, set to null
+   var checkBoxLabel = "This is a checkbox";
+   
+   // If no checkBoxLabel, would be ignored.
+   // If the provided value is TRUE and user unchecks, then it will become FALSE.
+   var checkBoxValue = { value : true };
+   
+   // It user clicks the button 0, then the result is 0. If clicking the button 1, then 1 returned...
+   var result = Services.prompt.confirmEx(
+     window, "Prompt Title", "Prompt descriptions", flags, 
+     btnLabels[0], btnLabels[1], btnLabels[2], checkBoxLabel, checkBoxValue
+   );
+   ```
 
 3. The nsIPromptService is defined at
  - toolkit/components/prompts/src/nsPrompter.js
  - embedding/components/windowwatcher/nsIPromptService.idl
  - embedding/components/windowwatcher/nsIPromptService2.idl
-
 
 ## What is the flag defining the RELEASE and BETA build
 - RELEASE_OR_BETA def
