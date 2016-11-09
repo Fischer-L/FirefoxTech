@@ -247,6 +247,7 @@ The mapping tables are at
        (Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1) + 
      
        // This says the left-most button label is the system "OK" string
+       // If no button 2, just eliminate this line
        (Services.prompt.BUTTON_TITLE_OK * Services.prompt.BUTTON_POS_2) + 
      
        // This says the default button is the right-most button
