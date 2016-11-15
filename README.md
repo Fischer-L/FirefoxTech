@@ -529,6 +529,9 @@ Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_
   ```
 
 [1] https://dxr.mozilla.org/mozilla-central/source/browser/app/profile/firefox.js
+
 [2] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.manifest
+
 [3] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsIURLFormatter.idl
+
 [4] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.js
