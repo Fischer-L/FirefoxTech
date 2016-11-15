@@ -509,3 +509,26 @@ Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_
 [1] https://dxr.mozilla.org/mozilla-central/source/netwerk/base/nsIPermissionManager.idl
 
 [2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp
+
+
+## How is SUMO link dynamically generated
+- The template URL is saved at firefox.js [1].
+  ```
+  pref("app.support.baseURL", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/");
+  ```
+  
+- The URLFormatterService [2][3][4] can help to format the template URL
+  ```javascript
+  const SUMO_PAGE_ID = "prefs-main";
+  var baseURL = Components.classes["@mozilla.org/toolkit/URLFormatterService;1"]
+                          .getService(Components.interfaces.nsIURLFormatter)
+                          .formatURLPref("app.support.baseURL");
+  // For FF 51.02a on MAC OSX 10.10.4 with en-US lang,
+  // url would be https://support.mozilla.org/1/firefox/51.0a2/Darwin/en-US/prefs-main
+  var url = baseURL + SUMO_PAGE_ID;
+  ```
+
+[1] https://dxr.mozilla.org/mozilla-central/source/browser/app/profile/firefox.js
+[2] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.manifest
+[3] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsIURLFormatter.idl
+[4] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.js
