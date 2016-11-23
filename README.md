@@ -23,6 +23,24 @@
      ```
 
 
+## RR
+- Example:
+```
+# Run FF with this cmd and make operations
+$ ./mach run --debugger=rr
+
+# List the processes recorded
+$ rr ps
+
+# Replay
+$ rr replay -p <pid> 
+```
+
+- While replaying, can use GBD cmd to set break point
+
+- http://rr-project.org
+
+
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
