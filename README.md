@@ -503,10 +503,11 @@ while (e.hasMoreElements()) {
 ```javascript
 
 // 1. Create URI form origin
-var uri = NetUtil.newURI("https://www.foo.com");
+let { NetUtil } = Cu.import("resource://gre/modules/NetUtil.jsm", {});
+let uri = NetUtil.newURI("https://www.foo.com");
 
 // 2. Create principal for origin [1]
-var principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
+let principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
 
 // 3. Add from principal, say, for "geo" permission
 Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_ACTION);
