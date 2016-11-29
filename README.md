@@ -501,18 +501,22 @@ while (e.hasMoreElements()) {
 
 ## Add permission
 ```javascript
-
-// 1. Create URI form origin
-let { NetUtil } = Cu.import("resource://gre/modules/NetUtil.jsm", {});
-let uri = NetUtil.newURI("https://www.foo.com");
-
-// 2. Create principal for origin [1]
-let principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
-
-// 3. Add from principal, say, for "geo" permission
-Services.perms.addFromPrincipal(principal, "geo", Ci.nsIPermissionManager.ALLOW_ACTION);
-
-// [1] https://dxr.mozilla.org/mozilla-central/source/caps/nsIScriptSecurityManager.idl#193
+function addPermission(type, origins) {
+  if (origins instanceof Array === false) origins = [origins];
+  
+  let { NetUtil } = Cu.import("resource://gre/modules/NetUtil.jsm", {});
+  origins.forEach(origin => {
+    // 1. Create URI form origin
+    let uri = NetUtil.newURI(origin);
+    
+    // 2. Create principal for origin
+    //    https://dxr.mozilla.org/mozilla-central/source/caps/nsIScriptSecurityManager.idl#193
+    let principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
+    
+    // 3. Add from principal
+    Services.perms.addFromPrincipal(principal, type, Ci.nsIPermissionManager.ALLOW_ACTION);
+  });
+}
 ```
 
 
