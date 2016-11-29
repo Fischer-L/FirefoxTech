@@ -1,5 +1,29 @@
 # FirefoxTech
- 
+
+## Build Commands
+- Artifact build Moz config
+```
+# Enable debug version of the pre-build binary artifact
+#export MOZ_DEBUG="1"
+
+# My first mozilla config
+# Automatically download and use compiled C++ components:
+ac_add_options --enable-artifact-builds
+# ac_add_options --enable-debug
+
+# Write build artifacts to:
+mk_add_options MOZ_OBJDIR=./objdir-frontend
+```
+
+- Mochitest
+```
+# For logging append one of 2 behind:
+#   - 2>/dev/null | grep TMP
+#   - 2>&1 | tee -a ./mochitest.log
+./mach mochitest [FILE_PATH] --log-tbpl=~/mochitest.log --log-tbpl-level=DEBUG
+```
+
+
 ## Printing Strings
 - xxxCString means 8-bit character strings, others 16-bit
 
