@@ -101,7 +101,18 @@ Look for active-update.xml, updates.xml, and updates folder under
 ### In Linux
 - Mach-built browser update records dir: /home/fischer/Projects/gecko/objdir-front-end/dist/bin
  
- 
+
+## Test Help Lib
+- TestUtils [1]
+- SpecialPowers [2][3]
+
+[1] gecko/testing/modules/TestUtils.jsm
+
+[2] gecko/testing/specialpowers/content/specialpowers.js
+
+[3] gecko/testing/specialpowers/content/specialpowersAPI.js
+
+
 ## How to load JS file as JSM module
 1. Create the target JS file, like, browser/base/content/sanitize.js
   ```javascript
