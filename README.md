@@ -24,7 +24,7 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
 ./mach mochitest [FILE_PATH] --log-tbpl=./mochitest.log-tbpl --log-tbpl-level=DEBUG
 ```
 
-- Only test one specific test to save time 
+- Only test one specific directory to save time 
 ```
 ./mach try -b do -p linux,linux64,macosx64,win32,win64 -t none [DIR_PATH] # like toolkit/components/passwordmgr/test/browser
 ```
