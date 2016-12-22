@@ -15,7 +15,8 @@ ac_add_options --enable-artifact-builds
 mk_add_options MOZ_OBJDIR=./objdir-frontend
 ```
 
-- Mochitest
+## Mochitest
+- Run
 ```
 # For logging append one of 2 behind:
 #   - 2>/dev/null | grep TMP
