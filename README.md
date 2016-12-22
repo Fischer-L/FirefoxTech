@@ -20,7 +20,12 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
 # For logging append one of 2 behind:
 #   - 2>/dev/null | grep TMP
 #   - 2>&1 | tee -a ./mochitest.log
-./mach mochitest [FILE_PATH] --log-tbpl=~/mochitest.log --log-tbpl-level=DEBUG
+./mach mochitest [FILE_PATH] --log-tbpl=./mochitest.log-tbpl --log-tbpl-level=DEBUG
+```
+
+- Only test one specific test to save time 
+```
+./mach try …… none <TEST_DIRECTORY> # remove -u
 ```
 
 
