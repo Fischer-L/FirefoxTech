@@ -26,7 +26,7 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
 
 - Only test one specific test to save time 
 ```
-./mach try …… none <TEST_DIRECTORY> # remove -u
+./mach try -b do -p linux,linux64,macosx64,win32,win64 -t none [DIR_PATH] # like toolkit/components/passwordmgr/test/browser
 ```
 
 
