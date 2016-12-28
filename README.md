@@ -97,6 +97,30 @@ $ rr replay -p <pid>
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
  
  
+##Where does gBrowser come from
+In browser.js [1]
+```javascript
+[
+  // Where <tabbrowser id="content"> === document.getElementById("content")
+  ["gBrowser",            "content"], ...
+].forEach(function(elementGlobal) {
+  var [name, id] = elementGlobal;
+  window.__defineGetter__(name, function() {
+    var element = document.getElementById(id);
+    if (!element)
+      return null;
+    delete window[name];
+    return window[name] = element;
+  });
+  window.__defineSetter__(name, function(val) {
+    delete window[name];
+    return window[name] = val;
+  });
+});
+```
+[1] https://dxr.mozilla.org/mozilla-central/source/browser/base/content/browser.js#203
+
+ 
 ##Where is the update history record stored
 Look for active-update.xml, updates.xml, and updates folder under 
 
