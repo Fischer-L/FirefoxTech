@@ -66,7 +66,7 @@ $ rr ps
 $ rr replay -p <pid> 
 ```
 
-- While replaying, can use GBD cmd to set break point
+- While replaying, can use GDB cmd to set break point
 
 - http://rr-project.org
 
