@@ -508,9 +508,9 @@ appCaches.perms.forEach(p => {
   return nsContentPermissionUtils::AskPermission(aRequest, window->GetCurrentInnerWindow()); 
   ```
 
-[1] https://dxr.mozilla.org/mozilla-central/source/dom/notification/DesktopNotification.cpp#48
+  [1] https://dxr.mozilla.org/mozilla-central/source/dom/notification/DesktopNotification.cpp#48
 
-[2] https://dxr.mozilla.org/mozilla-central/source/dom/base/nsDOMWindowUtils.cpp#3942
+  [2] https://dxr.mozilla.org/mozilla-central/source/dom/base/nsDOMWindowUtils.cpp#3942
 
 2. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types.
 
