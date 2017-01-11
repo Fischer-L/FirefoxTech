@@ -502,7 +502,8 @@ appCaches.perms.forEach(p => {
 
 
 ## How does notification popup for permission request show
-1. DesktopNotificationRequest::Run [1] or nsDOMWindowUtils::AskPermission [2] would call nsContentPermissionUtils::AskPermission to start request
+1. DesktopNotificationRequest::Run [1] or nsDOMWindowUtils::AskPermission [2] would call nsContentPermissionUtils::AskPermission to start request.
+
   ```cpp
   return nsContentPermissionUtils::AskPermission(aRequest, window->GetCurrentInnerWindow()); 
   ```
@@ -511,7 +512,8 @@ appCaches.perms.forEach(p => {
 
 [2] https://dxr.mozilla.org/mozilla-central/source/dom/base/nsDOMWindowUtils.cpp#3942
 
-2. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types
+2. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types.
+
   ```cpp
   nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
   ```
@@ -544,6 +546,7 @@ appCaches.perms.forEach(p => {
 
 6. @browser.xul
  - would include notification popup UI: panel#notification-popup
+ 
    ```
    #include popup-notifications.inc
    ```
