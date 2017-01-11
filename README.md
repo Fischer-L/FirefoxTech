@@ -586,6 +586,40 @@ function addPermission(type, origins) {
 ```
 
 
+## Make a fake permission request
+```javascript
+function makePermissionRequest(origin, permType = "persistent-storage", xulBrowser = null) {
+  let { NetUtil } = Cu.import("resource://gre/modules/NetUtil.jsm", {});
+  let uri = NetUtil.newURI(origin);
+  let principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
+
+  let type = {
+    type: permType,
+    access: null,
+    options: [],
+    QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPermissionType]),
+  };
+  let typeArray = Cc["@mozilla.org/array;1"].createInstance(Ci.nsIMutableArray);
+  typeArray.appendElement(type, false);
+
+  let request = {
+    principal,
+    types: typeArray,
+    QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPermissionRequest]),
+    allow: function() {
+      console.log(`Allow ${permType} Permissoin`);
+    },
+    cancel: function() {
+      console.log(`Block ${permType} Permissoin`);
+    },
+    element: xulBrowser || gBrowser.selectedBrowser,
+    window: null,
+  };
+  return request;
+}
+```
+
+
 ## How is permission removed
 1. Remove by permission or uri or principal using `nsIPermissionManager` [1].
 
