@@ -589,10 +589,12 @@ function addPermission(type, origins) {
 ## Make a fake permission request
 ```javascript
 function makePermissionRequest(origin, permType = "persistent-storage", xulBrowser = null) {
+  // Make a principal from given origin
   let { NetUtil } = Cu.import("resource://gre/modules/NetUtil.jsm", {});
   let uri = NetUtil.newURI(origin);
   let principal = Services.scriptSecurityManager.createCodebasePrincipal(uri, {});
-
+  
+  // Make a permission type array
   let type = {
     type: permType,
     access: null,
@@ -616,6 +618,13 @@ function makePermissionRequest(origin, permType = "persistent-storage", xulBrows
     window: null,
   };
   return request;
+}
+
+function sendPermissionRequest(request, chromeWindow = null) {
+  // Using askPermission from nsIDOMWindowUtils that takes care of the remoting if needed.
+  let window = chromeWindow || gBrowser.ownerGlobal;
+  let windowUtils = window.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils);
+  windowUtils.askPermission(request);
 }
 ```
 
