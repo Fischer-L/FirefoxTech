@@ -276,40 +276,6 @@ The mapping tables are at
  
 4. Element receives click event and perform jobs.
 
-## How does notification popup for permission request show
-1. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types
- ```cpp
- nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
- ```
-
-2. @nsIContentPermissionRequest::GetTypes implementation
- - such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
-
-3. @nsContentPermissionUtils::AskPermission, after  preparation, would call RemotePermissionRequest::Sendprompt
- ```cpp
- req->Sendprompt();
- ```
-
-4. @nsBrowserGlue.js,
- - ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
- - In ContentPermissionPrompt._showPrompt, the request would be recorded by
-  ```cpp
-  Services.perms.addFromPrincipal(.....)
-  ```
- - the getter of PopupNotifications is at browser.js
-  ```cpp
-  XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
-  ```
- - PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
-
-5. @browser.xul
- - would include notification popup UI: panel#notification-popup
-  ```
-  #include popup-notifications.inc
-  ```
-  The file is at browser/base/content/popup-notifications.inc 
- - the XBL binding for panel#notification-popup is at toolkit/content/widgets/popup.xml#arrowpanel
-
 
 ## How to make a prompt
 1. Get the nsIPromptService service
@@ -380,37 +346,6 @@ The mapping tables are at
   - Components.classes["@mozilla.org/network/effective-tld-service;1"].getService(Components.interfaces.nsIEffectiveTLDService);
   - XPCOMUtils.defineLazyServiceGetter({}, "@mozilla.org/network/effective-tld-service;1", "nsIEffectiveTLDService"); 
 - Accessible from Services.eTLD at Services.jsm
-
-
-## How dose mPermissionTable get put entries
-1. nsPermissionManager::Init [1]
-2.  nsPermissionManager::InitDB [2]
-3. nsPermissionManager::Import [3]
-   => Here import permission file
-4. nsPermissionManager::_DoImport [4]
-   => Here, read line，loop permissions
-   
-    4-1. Go with UpgradeHostToOriginAndInsert then AddInternal [5] -> [6] -> [7]
-  
-    or
-  
-    4-2 Directly call AddInterna [8]
-
-[1] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#787
-
-[2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#843
-
-[3] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2608
-
-[4] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2668
-
-[5] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2722
-
-[6] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#425
-
-[7] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#285
-
-[8] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2747
 
 
 ## Where is http cahce stored
@@ -533,6 +468,73 @@ appCaches.perms.forEach(p => {
   - Underneath it uses `CacheEntry::GetDataSize` to get file size or `CacheFileMetadata->Offset()` to get from file metadta
   - Would get the least usage (including the least overhead costs), around 80% of the 1st method
   
+
+## How dose mPermissionTable get put entries
+1. nsPermissionManager::Init [1]
+2.  nsPermissionManager::InitDB [2]
+3. nsPermissionManager::Import [3]
+   => Here import permission file
+4. nsPermissionManager::_DoImport [4]
+   => Here, read line，loop permissions
+   
+    4-1. Go with UpgradeHostToOriginAndInsert then AddInternal [5] -> [6] -> [7]
+  
+    or
+  
+    4-2 Directly call AddInterna [8]
+
+[1] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#787
+
+[2] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#843
+
+[3] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2608
+
+[4] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2668
+
+[5] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2722
+
+[6] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#425
+
+[7] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#285
+
+[8] https://dxr.mozilla.org/mozilla-central/source/extensions/cookie/nsPermissionManager.cpp#2747
+
+
+
+## How does notification popup for permission request show
+1. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types
+ ```cpp
+ nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
+ ```
+
+2. @nsIContentPermissionRequest::GetTypes implementation
+ - such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
+
+3. @nsContentPermissionUtils::AskPermission, after  preparation, would call RemotePermissionRequest::Sendprompt
+ ```cpp
+ req->Sendprompt();
+ ```
+
+4. @nsBrowserGlue.js,
+ - ContentPermissionPrompt.prompt decides to show, say geolocation, desktop-notification, flyweb-publish-server, which permission popup, then, ContentPermissionPrompt._showPrompt would call PopupNotifications.show
+ - In ContentPermissionPrompt._showPrompt, the request would be recorded by
+  ```cpp
+  Services.perms.addFromPrincipal(.....)
+  ```
+ - the getter of PopupNotifications is at browser.js
+  ```cpp
+  XPCOMUtils.defineLazyGetter(this, "PopupNotifications", …
+  ```
+ - PopupNotifications is defined at toolkit/modules/PopupNotifications.jsm
+
+5. @browser.xul
+ - would include notification popup UI: panel#notification-popup
+  ```
+  #include popup-notifications.inc
+  ```
+  The file is at browser/base/content/popup-notifications.inc 
+ - the XBL binding for panel#notification-popup is at toolkit/content/widgets/popup.xml#arrowpanel
+
 
 ## Enum permissions
 ```javascript
