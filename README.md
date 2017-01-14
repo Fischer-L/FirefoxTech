@@ -75,7 +75,7 @@ $ rr replay -p <pid>
 ## Access OS file system in JS
 Import toolkit/components/osfile/osfile.jsm
 
-```javscript
+```javascript
 Components.utils.import("resource://gre/modules/osfile.jsm");
 ```
 
