@@ -82,6 +82,26 @@ Components.utils.import("resource://gre/modules/osfile.jsm");
 Then utility functions are accessible from `OS.File`
 
 
+## Manipulate JS source codes in JS
+- Using SpiderMonkey Reflection Parser API [1], then it can live parse and touch JS codes.
+
+- The Reflection Parser API is under [2]
+
+- Import example:
+  ```javascript
+  // Method 1:
+  const init = Components.classes["@mozilla.org/jsreflect;1"].createInstance();
+  init();
+  
+  // Method 2: 
+  Components.utils.import("resource://gre/modules/reflect.jsm");
+  ```
+
+[1] https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API
+
+[2] toolkit/components/reflect
+
+
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
