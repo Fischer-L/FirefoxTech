@@ -72,6 +72,16 @@ $ rr replay -p <pid>
 - http://rr-project.org
 
 
+## Access OS file system in JS
+Import toolkit/components/osfile/osfile.jsm
+
+```javscript
+Components.utils.import("resource://gre/modules/osfile.jsm");
+```
+
+Then utility functions are accessible from `OS.File`
+
+
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
