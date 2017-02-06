@@ -31,6 +31,14 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
 ```
 
 
+## Mozreview
+- Git pushes specific range [1]
+
+ `git mozreview push HEAD~2..HEAD` or `git mozreview push 7accd95..6834f7e`
+ 
+ [1] http://mozilla-version-control-tools.readthedocs.io/en/latest/mozreview/commits.html#id1
+
+
 ## Printing Strings
 - xxxCString means 8-bit character strings, others 16-bit
 
