@@ -109,6 +109,8 @@ Then utility functions are accessible from `OS.File`
 
 [2] toolkit/components/reflect
 
+[3] Example: https://github.com/Fischer-L/FirefoxTech/blob/master/florian_on_js_reflection.js
+
 
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
