@@ -112,7 +112,7 @@ Then utility functions are accessible from `OS.File`
 [3] Example: https://github.com/Fischer-L/FirefoxTech/blob/master/florian_on_js_reflection.js
 
 
-## Do something in IPDL compile phase
+## IPLD Code Gen Overrall
 * The `ipc/ipdl/Makefile.in` is the build start.
 
 * All the utility modules, classes, functions... are put under `ipc/ipdl/ipdl`.
