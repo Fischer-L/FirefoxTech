@@ -28,6 +28,10 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
     3. Name your profile, ex DEV_PROFILE.
        Then would be able to run `./mach run -P DEV_PROFILE`
   
+- Open Browser Toolbox without prompt
+  
+  Set devtools.debugger.prompt-connection to false
+
 
 ## Mochitest
 - Run
