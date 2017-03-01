@@ -15,6 +15,20 @@ ac_add_options --enable-artifact-builds
 mk_add_options MOZ_OBJDIR=./objdir-frontend
 ```
 
+- Launch with specific profile
+```
+./mach run -P <SPECIFIC_PROFILE_NAME>
+```
+  - Create a specific profile name:
+    
+    1. Run `./mach run -P`
+    
+    2. A dialog window would prompt. Chose "Create Profile"
+    
+    3. Name your profile, ex DEV_PROFILE.
+       Then would be able to run `./mach run -P DEV_PROFILE`
+  
+
 ## Mochitest
 - Run
 ```
