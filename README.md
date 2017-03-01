@@ -19,7 +19,7 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
   ```
   ./mach run -P <SPECIFIC_PROFILE_NAME>
   ```
-  - Create a specific profile name:
+  - Create a specific profile:
     
     1. Run `./mach run -P`
     
