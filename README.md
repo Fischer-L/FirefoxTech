@@ -56,7 +56,7 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
   3. Browser Toolbox opens, pausing Firefox startup at the added line
 
   This triggers Firefox to wait until the debugger connects, which makes it
-possible to debug some Firefox startup JS code paths. By Bug 1275942
+possible to debug some Firefox startup JS code paths. By Bug 1275942 [1].
 
  [1] https://bugzilla.mozilla.org/show_bug.cgi?id=1275942
 
