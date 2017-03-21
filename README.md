@@ -202,30 +202,30 @@ Then utility functions are accessible from `OS.File`
 ## tabbrowser / browser / tabs / tab
 * @browser/base/content/browser.xul
 
-* ###Tabbrowser
+### Tabbrowser
  - Bindings: browser/base/content/tabbrowser.xml#tabbrowser
  - This element contains `<browser>`
  - `this.selectedBrowser` is `<browser>`
  - `this.tabContainer` is `<tabs>` but `<tabs>` is not under `<tabbrowser>` in the DOM tree
  - This element even manage tabs so, for example of adding a tab, call `this.addTab`
 
-* ###browser
+### browser
  - Under `<tabbrowser>` in the DOM tree
  - Similar to `<iframe>` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
  - Website is rendered inside `<browser>`
  
-* ###tabs
+### tabs
  - This element contains `<tab>` in the DOM tree
  
  ![tabs image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tabs.png)
   
-* ###tab
+### tab
  - A single tab 
  
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
  
  
-##Where does gBrowser come from
+## Where does gBrowser come from
 In browser.js [1]
 ```javascript
 [
@@ -249,10 +249,10 @@ In browser.js [1]
 [1] https://dxr.mozilla.org/mozilla-central/source/browser/base/content/browser.js#203
 
  
-##Where is the update history record stored
+## Where is the update history record stored
 Look for active-update.xml, updates.xml, and updates folder under 
 
-###In MAC
+### In MAC
 - Developer Edition update records dir: "/Users/USERNAME/Library/Caches/Mozilla/updates/Applications/FirefoxDeveloperEdition"
 - Mach-built browser update files dir: /Users/USERNAME/Library/Caches/Mozilla/updates/Users/foxbrush/Projects/gecko/objdir-frontend/dist/Nightly
 
