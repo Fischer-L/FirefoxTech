@@ -214,7 +214,7 @@ Then utility functions are accessible from `OS.File`
  - Similar to `<iframe>` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
  - Website is rendered inside `<browser>`
  - Bindings:
-   - browser/base/content/tabbrowser.xml#tabbrowser-remote-browser
+   - browser/base/content/tabbrowser.xml#[ tabbrowser-remote-browser | tabbrowser-browser ]
    - toolkit/content/widgets/browser.xml#browser
  
 ### tabs
