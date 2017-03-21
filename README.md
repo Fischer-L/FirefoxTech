@@ -213,6 +213,9 @@ Then utility functions are accessible from `OS.File`
  - Under `<tabbrowser>` in the DOM tree
  - Similar to `<iframe>` except that it holds a page history and contains additional methods to manipulate the currently displayed page.
  - Website is rendered inside `<browser>`
+ - Bindings:
+   - browser/base/content/tabbrowser.xml#tabbrowser-remote-browser
+   - toolkit/content/widgets/browser.xml#browser
  
 ### tabs
  - This element contains `<tab>` in the DOM tree
