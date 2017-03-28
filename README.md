@@ -110,6 +110,22 @@ $ rr replay -p <pid>
 - http://rr-project.org
 
 
+## e10s
+### Limit of the number of content processes
+- Types of content processes [1]: 
+  - DEFAULT_REMOTE_TYPE = web
+  - FILE_REMOTE_TYPE = file
+  - EXTENSION_REMOTE_TYPE = extension
+  - LARGE_ALLOCATION_REMOTE_TYPE = webLargeAllocation
+
+  [1] http://searchfox.org/mozilla-central/source/dom/ipc/ContentParent.h#40
+
+- Prefs of limit
+  - Default: dom.ipc.processCount 
+  - Per type: dom.ipc.processCount.[type]
+  - Priority example: dom.ipc.processCount.web > dom.ipc.processCount 
+
+
 ## Access OS file system in JS
 Import toolkit/components/osfile/osfile.jsm
 
