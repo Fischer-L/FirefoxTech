@@ -834,3 +834,26 @@ function sendPermissionRequest(request, chromeWindow = null) {
 [3] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsIURLFormatter.idl
 
 [4] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.js
+
+
+## Never Hard Code Brand Name
+1. Insert the brand name strings asset:
+
+ ```
+   <stringbundle id="bundle_brand" src="chrome://branding/locale/brand.properties"/>
+ ```
+ 
+2. In your string asset, for example
+
+ ```
+   # LOCALIZATION NOTE (hello): %S = brandShortName
+   hello=Hello %s
+ ```
+
+3. Format the string
+
+ ```
+   let brandShortName = document.getElementById("bundle_brand").getString("brandShortName");
+   let myStringBundle = document.getElementById("myStringBundle");
+   let text = myStringBundle.getFormattedString("hello", [brandShortName]); // text = "Hello Nightly" on Nightly
+ ```
