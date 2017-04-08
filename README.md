@@ -49,6 +49,13 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
 ```
 
 
+## ESlint
+- Under tools/lint
+- tools/lint/eslint/update is the script excuting update task
+- tools/lint/eslint.lint is the script run when excuting `./mach run FILE_PATH`
+- taskcluster/ci/source-test/mozlint.yml is the lint task file for TaskCluster
+
+
 ## Debug
 - Stop Firfox launch process to wait for the debugger connection
   1. Add "debugger;" to top of browser/base/content/browser.js
