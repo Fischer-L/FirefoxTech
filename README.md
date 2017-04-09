@@ -402,9 +402,54 @@ Look for active-update.xml, updates.xml, and updates folder under
 
 
 ## How to redirect about: page to a real page
-The mapping tables are at
-- browser/components/about/AboutRedirector.cpp
-- docshell/base/nsAboutRedirector.cpp
+- The mapping tables are at
+  - browser/components/about/AboutRedirector.cpp
+  - docshell/base/nsAboutRedirector.cpp
+  
+- The call flow:
+
+  ## IS CYCLIC !!??
+
+  - To get and return the channel of the about: page NS_NewChannelInternal at [8] would invoke nsIOService::NewChannelFromURIWithLoadInfo -> nsIOService::NewChannelFromURIWithProxyFlagsInternal
+
+  - nsIOService::NewChannelFromURIWithProxyFlagsInternal at [7] would receive the uri to a about: page, and then
+  
+    - get the nsAboutProtocolHandler instance based on the uri scheme(about:), and then
+      ```
+       rv = GetProtocolHandler(scheme.get(), getter_AddRefs(handler));
+      ```
+      
+    - Call nsAboutProtocolHandler::NewChannel2 to get the channel of the about: page
+      ```
+       rv = handler->NewChannel2(aURI, aLoadInfo, getter_AddRefs(channel));
+      ```
+
+  - nsAboutProtocolHandler::NewChannel2 at [1] would receive the uri to a about: page, and then
+  
+    - get the instance of nsIAboutModule[4], which is AboutRedirector[2] or nsAboutRedirector[3] based on uri, and then
+      ```
+       nsresult rv = NS_GetAboutModule(uri, getter_AddRefs(aboutMod));
+      ```
+      
+      - mozilla::Module::ContractIDEntry kBrowserContracts at [5] and mozilla::Module::ContractIDEntry kDocShellContracts at [6] hold the mapping between about: page and the contract id of AboutRedirector / nsAboutRedirector
+    
+    - new a channel instance of that about: page to return to the caller
+      ```
+       rv = aboutMod->NewChannel(uri, aLoadInfo, result);
+      ```
+      
+ - AboutRedirector/nsAboutRedirector::NewChannel would map real chrome url to uri and set the channel
+  
+  
+  
+  [1] netwerk/protocol/about/nsAboutProtocolHandler.cpp
+  [2] browser/components/about/AboutRedirector.cpp
+  [3] docshell/base/nsAboutRedirector.cpp
+  [4] netwerk/protocol/about/nsIAboutModule.idl
+  [5] browser/components/build/nsModule.cpp
+  [6] docshell/build/nsDocShellModule.cpp
+  [7] netwerk/base/nsIOService.cpp
+  [8] netwerk/base/nsNetUtil.cpp
 
 
 ## How accesskey is handled
