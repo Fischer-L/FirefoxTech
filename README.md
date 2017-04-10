@@ -252,6 +252,62 @@ Then utility functions are accessible from `OS.File`
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
  
  
+## Firefox Startup
+### On the 1st window loaded
+- After observing the browser-delayed-startup-finished event, then `_onFirstWindowLoaded` at [1] would be invoked.
+
+- Inside `_onFirstWindowLoaded`, would do a bunch of initialization jobs such as:
+  - Init PDF.js
+    ```
+     PdfJs.init(true);
+     ...
+    ```
+    
+  - Init ProcessHangMonitor
+    ```
+     ProcessHangMonitor.init();
+    ```
+    
+  - Decide if going to show the reset prompt like "It looks like you haven't started Firefox in a while. Do you want to clean it up for a fresh, like-new experience? And by the way, welcome back!"
+   ```
+    // Offer to reset a user's profile if it hasn't been used for 60 days.
+    const OFFER_PROFILE_RESET_INTERVAL_MS = 60 * 24 * 60 * 60 * 1000;
+    let lastUse = Services.appinfo.replacedLockTime;
+    let disableResetPrompt = Services.prefs.getBoolPref("browser.disableResetPrompt", false);
+
+    if (!disableResetPrompt && lastUse &&
+        Date.now() - lastUse >= OFFER_PROFILE_RESET_INTERVAL_MS) {
+      this._resetProfileNotification("unused");
+    } else if (AppConstants.platform == "win" && !disableResetPrompt) {
+      // Check if we were just re-installed and offer Firefox Reset
+      let updateChannel;
+      try {
+        updateChannel = Cu.import("resource://gre/modules/UpdateUtils.jsm", {}).UpdateUtils.UpdateChannel;
+      } catch (ex) {}
+      if (updateChannel) {
+        let uninstalledValue =
+          WindowsRegistry.readRegKey(Ci.nsIWindowsRegKey.ROOT_KEY_CURRENT_USER,
+                                     "Software\\Mozilla\\Firefox",
+                                     `Uninstalled-${updateChannel}`);
+        let removalSuccessful =
+          WindowsRegistry.removeRegKey(Ci.nsIWindowsRegKey.ROOT_KEY_CURRENT_USER,
+                                       "Software\\Mozilla\\Firefox",
+                                       `Uninstalled-${updateChannel}`);
+        if (removalSuccessful && uninstalledValue == "True") {
+          this._resetProfileNotification("uninstall");
+        }
+      }
+    }
+   ```
+  
+  - Check for updates
+    ```
+     this._checkForOldBuildUpdates();
+    ```
+  
+ [1] browser/components/nsBrowserGlue.js
+ 
+ 
 ## Where does gBrowser come from
 In browser.js [1]
 ```javascript
@@ -408,7 +464,7 @@ Look for active-update.xml, updates.xml, and updates folder under
   
 - The call flow:
 
-  ## IS CYCLIC !!??
+  #### IS CYCLIC !!??
 
   - To get and return the channel of the about: page NS_NewChannelInternal at [8] would invoke nsIOService::NewChannelFromURIWithLoadInfo -> nsIOService::NewChannelFromURIWithProxyFlagsInternal
 
@@ -440,16 +496,21 @@ Look for active-update.xml, updates.xml, and updates folder under
       
  - AboutRedirector/nsAboutRedirector::NewChannel would map real chrome url to uri and set the channel
   
+ [1] netwerk/protocol/about/nsAboutProtocolHandler.cpp
   
+ [2] browser/components/about/AboutRedirector.cpp
   
-  [1] netwerk/protocol/about/nsAboutProtocolHandler.cpp
-  [2] browser/components/about/AboutRedirector.cpp
-  [3] docshell/base/nsAboutRedirector.cpp
-  [4] netwerk/protocol/about/nsIAboutModule.idl
-  [5] browser/components/build/nsModule.cpp
-  [6] docshell/build/nsDocShellModule.cpp
-  [7] netwerk/base/nsIOService.cpp
-  [8] netwerk/base/nsNetUtil.cpp
+ [3] docshell/base/nsAboutRedirector.cpp
+  
+ [4] netwerk/protocol/about/nsIAboutModule.idl
+  
+ [5] browser/components/build/nsModule.cpp
+  
+ [6] docshell/build/nsDocShellModule.cpp
+  
+ [7] netwerk/base/nsIOService.cpp
+  
+ [8] netwerk/base/nsNetUtil.cpp
 
 
 ## How accesskey is handled
