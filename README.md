@@ -301,7 +301,7 @@ Then utility functions are accessible from `OS.File`
     ```
   
   - Check for updates
-    ```
+    ```javascript
      this._checkForOldBuildUpdates();
     ```
   
