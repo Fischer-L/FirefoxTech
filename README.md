@@ -258,27 +258,27 @@ Then utility functions are accessible from `OS.File`
 
 - Inside `_onFirstWindowLoaded`, would do a bunch of initialization jobs such as:
   - Init PDF.js
-    ```
+    ```javascript
      PdfJs.init(true);
      ...
     ```
     
   - Init ProcessHangMonitor
-    ```
+    ```javascript
      ProcessHangMonitor.init();
     ```
     
   - Decide if going to show the reset prompt like "It looks like you haven't started Firefox in a while. Do you want to clean it up for a fresh, like-new experience? And by the way, welcome back!"
-   ```
-    // Offer to reset a user's profile if it hasn't been used for 60 days.
-    const OFFER_PROFILE_RESET_INTERVAL_MS = 60 * 24 * 60 * 60 * 1000;
-    let lastUse = Services.appinfo.replacedLockTime;
-    let disableResetPrompt = Services.prefs.getBoolPref("browser.disableResetPrompt", false);
+    ```javascript
+     // Offer to reset a user's profile if it hasn't been used for 60 days.
+     const OFFER_PROFILE_RESET_INTERVAL_MS = 60 * 24 * 60 * 60 * 1000;
+     let lastUse = Services.appinfo.replacedLockTime;
+     let disableResetPrompt = Services.prefs.getBoolPref("browser.disableResetPrompt", false);
 
-    if (!disableResetPrompt && lastUse &&
+     if (!disableResetPrompt && lastUse &&
         Date.now() - lastUse >= OFFER_PROFILE_RESET_INTERVAL_MS) {
-      this._resetProfileNotification("unused");
-    } else if (AppConstants.platform == "win" && !disableResetPrompt) {
+       this._resetProfileNotification("unused");
+     } else if (AppConstants.platform == "win" && !disableResetPrompt) {
       // Check if we were just re-installed and offer Firefox Reset
       let updateChannel;
       try {
@@ -297,8 +297,8 @@ Then utility functions are accessible from `OS.File`
           this._resetProfileNotification("uninstall");
         }
       }
-    }
-   ```
+     }
+    ```
   
   - Check for updates
     ```
