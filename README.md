@@ -457,6 +457,55 @@ Look for active-update.xml, updates.xml, and updates folder under
 ```
 
 
+## Moz UITour
+- A library enabling the whitelisted webpages to interact with Firefox internal functions[1]
+
+### Requirements
+- The whilelist: browser/app/permissions
+  - For testings, add test url into, like, browser.uitour.testingOrigins="https:www.foo.com,https://www.bar.com"
+
+- The pref:
+  - browser.uitour.enabled: true to enable
+  - browser.uitour.requireSecure: false to allow http or only https and about
+
+
+### Call flow
+- In the webpage, include UITour-lib.js[2]
+  - Call `Mozilla.UITour.openPreferences()` to open about:preferences
+  - Mozilla.UITour would, then, dispatch a mozUITour event on document to talk to Firefox
+
+- In the content-UITour.js[3]
+  - Which is loaded at gBrowserInit.onLoad[5]
+    ````javascript
+      mm.loadFrameScript("chrome://browser/content/content-UITour.js", true);
+    ```
+  - Listens to the mozUITour event
+    ```javascript
+      addEventListener("mozUITour", UITourListener, false, true);
+    ```
+  - After checking the requesting page is trusted, then send an async message
+    ```javascript
+      sendAsyncMessage("UITour:onPageEvent", {
+        detail: event.detail,
+        type: event.type,
+        pageVisibilityState: content.document.visibilityState,
+      });
+    ```
+    
+- In the nsBrowserGlue.js, would listen to the UITour:onPageEvent event, then call UITour[4] to handle the event
+  ```javascript
+    globalMM.addMessageListener("UITour:onPageEvent", function(aMessage) {
+      UITour.onPageEvent(aMessage, aMessage.data);
+    });
+  ```
+
+[1] http://bedrock.readthedocs.io/en/latest/uitour.html
+[2] browser/components/uitour/UITour-lib.js
+[3] browser/components/uitour/content-UITour.js
+[4] browser/components/uitour/UITour.jsm
+[5] browser/base/content/browser.js
+
+
 ## How to redirect about: page to a real page
 - The mapping tables are at
   - browser/components/about/AboutRedirector.cpp
