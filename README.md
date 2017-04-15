@@ -500,9 +500,13 @@ Look for active-update.xml, updates.xml, and updates folder under
   ```
 
 [1] http://bedrock.readthedocs.io/en/latest/uitour.html
+
 [2] browser/components/uitour/UITour-lib.js
+
 [3] browser/components/uitour/content-UITour.js
+
 [4] browser/components/uitour/UITour.jsm
+
 [5] browser/base/content/browser.js
 
 
