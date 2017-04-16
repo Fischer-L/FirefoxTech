@@ -814,50 +814,72 @@ appCaches.perms.forEach(p => {
 
 
 
-## How does notification popup for permission request show
-1. DesktopNotificationRequest::Run [1] or nsDOMWindowUtils::AskPermission [2] would call nsContentPermissionUtils::AskPermission to start request.
+## How does permission request show
+### The geo permission example
+1. The web page calls `navigator.geolocation.getCurrentPosition`
 
-  ```cpp
-  return nsContentPermissionUtils::AskPermission(aRequest, window->GetCurrentInnerWindow()); 
-  ```
+2. It would call into gecko through `getCurrentPosition` at Geolocation.webidl[1]
 
-  [1] https://dxr.mozilla.org/mozilla-central/source/dom/notification/DesktopNotification.cpp#48
+   [1] dom/webidl/Geolocation.webidl
 
-  [2] https://dxr.mozilla.org/mozilla-central/source/dom/base/nsDOMWindowUtils.cpp#3942
+3. `Geolocation::GetCurrentPosition`[1] at gecko is invoked, then
+   
+   - new an `nsGeolocationRequest` object
+   
+   - register a prompt request by `RegisterRequestWithPrompt(request)`[2]
 
-2. @nsContentPermissionUtils::AskPermission, would call nsIContentPermissionRequest::GetTypes to get permission array for types.
+   [1] dom/geolocation/nsGeolocation.cpp
+   [2] Geolocation::RegisterRequestWithPrompt
+   
+4. ` Geolocation::RegisterRequestWithPrompt` would dispatch a `RequestPromptEvent` event to the main thread
+
+   ```cpp
+     nsCOMPtr<nsIRunnable> ev  = new RequestPromptEvent(request, mOwner);
+     NS_DispatchToMainThread(ev);
+   ```
+
+5. In `RequestPromptEvent::Run` then would call `nsContentPermissionUtils::AskPermission`
+
+6. `nsContentPermissionUtils::AskPermission` would call 1nsIContentPermissionRequest::GetTypes` to get permission array for types.
 
   ```cpp
   nsresult rv = aRequest->GetTypes(getter_AddRefs(typeArray));
   ```
 
-3. @nsIContentPermissionRequest::GetTypes implementation
- - such as nsGeolocationRequest::GetTypes would call nsContentPermissionUtils::CreatePermissionArray to create permission array for types
+  - `nsGeolocationRequest::GetTypes` (implementation of `nsIContentPermissionRequest::GetTypes`) would call `nsContentPermissionUtils::CreatePermissionArray` to create permission array for types
 
-4. @nsContentPermissionUtils::AskPermission, after preparation, would call RemotePermissionRequest::Sendprompt
+  - Back to `nsContentPermissionUtils::AskPermission`, after preparation, would get the `nsIContentPermissionPrompt`[1] service, then request for a prompt
+  
   ```cpp
-  req->Sendprompt();
+    nsCOMPtr<nsIContentPermissionPrompt> prompt = do_GetService(NS_CONTENT_PERMISSION_PROMPT_CONTRACTID);
+    if (prompt) {
+      if (NS_FAILED(prompt->Prompt(aRequest))) {
+        return NS_ERROR_FAILURE;
+      }
+    }
   ```
+  
+  [1] dom/interfaces/base/nsIContentPermissionPrompt.idl
 
-5. @nsBrowserGlue.js,
- - ContentPermissionPrompt.prompt which implements Ci.nsIContentPermissionPrompt.prompt would be invoked to handle request.
+7. In nsBrowserGlue.js,
+ - `ContentPermissionPrompt.prompt` implementing `Ci.nsIContentPermissionPrompt.prompt` would be invoked to handle request.
  
- - @ContentPermissionPrompt.prompt, ContentPermissionIntegration.createPermissionPrompt(type, request) is called to create "geolocation" or "persistent-storage" or ... permission UI prompter.
-   - @PermissionUI.jsm, many permission UI prompters are implemented, like PersistentStoragePermissionPrompt or GeolocationPermissionPrompt or ...
+ - In `ContentPermissionPrompt.prompt`, `ContentPermissionIntegration.createPermissionPrompt(type, request)` is called to create "geolocation" or "persistent-storage" or ... permission UI prompter.
+   - In PermissionUI.jsm, many permission UI prompters are implemented, like PersistentStoragePermissionPrompt or GeolocationPermissionPrompt or ...
  
  - Once getting permission UI prompter, call `prompt` on permission UI prompter to prompt permission request
    ```javascript
-   let permissionPrompt = combinedIntegration.createPermissionPrompt(type, request);
-   permissionPrompt.prompt();
+     let permissionPrompt = combinedIntegration.createPermissionPrompt(type, request);
+     permissionPrompt.prompt();
    ```
  
- - @PermissionPromptPrototype.prompt [1], ChromeWindow.PopupNotifications.show [2] is called to show popup notification for permission request
+ - In `PermissionPromptPrototype.prompt` [1], `ChromeWindow.PopupNotifications.show` [2] is called to show popup notification for permission request
  
   [1] https://dxr.mozilla.org/mozilla-central/source/browser/modules/PermissionUI.jsm#258
   
   [2] https://dxr.mozilla.org/mozilla-central/source/toolkit/modules/PopupNotifications.jsm#422
 
-6. @browser.xul
+6. In browser.xul
  - would include notification popup UI: panel#notification-popup
  
    ```
