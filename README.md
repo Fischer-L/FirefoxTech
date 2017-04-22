@@ -1055,3 +1055,10 @@ function sendPermissionRequest(request, chromeWindow = null) {
    let myStringBundle = document.getElementById("myStringBundle");
    let text = myStringBundle.getFormattedString("hello", [brandShortName]); // text = "Hello Nightly" on Nightly
  ```
+
+
+## Migrate Bookmarks from Other
+The great bugs by Gijs:
+
+- https://bugzilla.mozilla.org/show_bug.cgi?id=1344282#c29
+- https://bugzilla.mozilla.org/show_bug.cgi?id=1344759
