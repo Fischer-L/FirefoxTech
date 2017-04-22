@@ -117,6 +117,16 @@ $ rr replay -p <pid>
 - http://rr-project.org
 
 
+## Telemetry
+### Set probe for executing time
+```
+TelemetryStopwatch.start(....);
+// Codes being measured
+TelemetryStopwatch.finish(....);
+```
+[1] The great bug from mconley: https://bugzilla.mozilla.org/show_bug.cgi?id=1340842
+
+
 ## e10s
 ### Limit of the number of content processes
 - Types of content processes [1]: 
