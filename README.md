@@ -1062,3 +1062,25 @@ The great bugs by Gijs:
 
 - https://bugzilla.mozilla.org/show_bug.cgi?id=1344282#c29
 - https://bugzilla.mozilla.org/show_bug.cgi?id=1344759
+
+
+## Customize Mode
+- XUL: customizeMode.inc.xul
+- JS: CustomizeMode.jsm
+  - `CustomizeMode.toggle` would open/close the Customize mode
+- Not loaded in `<browser>` but directly in browser.xul, which right below the hbox#browser.
+  ```xml
+    <tabs id="tabbrowser-tabs">
+      /* The unique tab for the Customize mode */
+      <tab class="tabbrowser-tab" customizemode="true">
+    </tabs>
+    
+    <deck id="content-deck" flex="1">
+      <hbox id="browser">
+        /* Inside holds <tabbrowser> and <browser>s */
+      </hbox>
+      <hbox id="customization-container">
+        /* Inside hold the Customize mode UI */
+      </hbox>
+    </deck>
+  ```
