@@ -1066,8 +1066,10 @@ The great bugs by Gijs:
 
 ## Customize Mode
 - XUL: customizeMode.inc.xul
-- JS: CustomizeMode.jsm
+- JS: CustomizeMode.jsm, CustomizableUI.jsm
   - `CustomizeMode.toggle` would open/close the Customize mode
+- The customization state
+  - `CustomizableUI.setState` would serialed and saved state in the browser.uiCustomization.state char pref
 - Not loaded in `<browser>` but directly in browser.xul, which right below the hbox#browser.
   ```xml
     <tabs id="tabbrowser-tabs">
