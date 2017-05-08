@@ -1086,3 +1086,6 @@ The great bugs by Gijs:
       </hbox>
     </deck>
   ```
+
+## The flow of loading appcache from html element's manifest attribute
+https://github.com/Fischer-L/FirefoxTech/blob/master/Loading_Appcache_Manifest.md
