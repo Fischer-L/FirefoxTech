@@ -1089,3 +1089,27 @@ The great bugs by Gijs:
 
 ## The flow of loading appcache from html element's manifest attribute
 https://github.com/Fischer-L/FirefoxTech/blob/master/Loading_Appcache_Manifest.md
+
+## Profile Refresh
+- Services.appinfo.replacedLockTime
+
+- nsresult nsProfileLock::GetReplacedLockTime(PRTime *aResult)
+
+https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde3726/toolkit/profile/nsProfileLock.cpp#443
+
+- nsXULAppInfo::GetReplacedLockTime(PRTime *aReplacedLockTime)
+
+https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde3726/toolkit/xre/nsAppRunner.cpp#1021
+
+- nsLocalFile::SetLastModifiedTime(PRTime aLastModTime)
+
+https://dxr.mozilla.org/mozilla-central/rev/81977c96c6ff49e4b70f88a55f38d47f5e54a08b/xpcom/io/nsLocalFileUnix.cpp#1104
+
+- nsJAR::Extract(const nsACString &aEntryName, nsIFile* outFile)
+
+https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde3726/modules/libjar/nsJAR.cpp#233
+
+- toolkit/components/startup/nsAppStartup.cpp
+
+
+
