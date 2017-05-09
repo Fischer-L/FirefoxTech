@@ -1057,13 +1057,6 @@ function sendPermissionRequest(request, chromeWindow = null) {
  ```
 
 
-## Migrate Bookmarks from Other
-The great bugs by Gijs:
-
-- https://bugzilla.mozilla.org/show_bug.cgi?id=1344282#c29
-- https://bugzilla.mozilla.org/show_bug.cgi?id=1344759
-
-
 ## Customize Mode
 - XUL: customizeMode.inc.xul
 - JS: CustomizeMode.jsm, CustomizableUI.jsm
@@ -1112,4 +1105,9 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
 - toolkit/components/startup/nsAppStartup.cpp
 
 
+## Migrate Bookmarks/History from Other Browsers
+- The prefs for auto-migration: browser.migrate.automigrate.*
 
+- The great bugs by Gijs:
+  - https://bugzilla.mozilla.org/show_bug.cgi?id=1344282#c29
+  - https://bugzilla.mozilla.org/show_bug.cgi?id=1344759
