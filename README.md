@@ -1111,3 +1111,7 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
 - The great bugs by Gijs:
   - https://bugzilla.mozilla.org/show_bug.cgi?id=1344282#c29
   - https://bugzilla.mozilla.org/show_bug.cgi?id=1344759
+
+
+## Firefox Entry Point
+- static int do_main(int argc, char* argv[], char* envp[]) @ browser/app/nsBrowserApp.cpp
