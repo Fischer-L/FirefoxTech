@@ -1131,12 +1131,12 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
     
   - The event would brocast to let neccesasry components know Firefox is starting up.
   
-  - nsBrowserGlue.js listens to this event and would be loaded in this event
+  - nsBrowserGlue.js is registered for this event and would be loaded in this event
     - @ browser/components/BrowserComponents.manifest
-    ```
-      # This line says, load the nsBrowserGlue service of the contract id is @mozilla.org/browser/browserglue;1 for applications following
-      # application={ID_OF_DESKTOP_OR_FENNEC_OR_SOME_OTHER_BUILD_OF_FIREFOX}
-      category app-startup nsBrowserGlue service,@mozilla.org/browser/browserglue;1 application={3c2e2abc-06d4-11e1-ac3b-374f68613e61} application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} application={aa3c5121-dab2-40e2-81ca-7ea25febc110} application={a23983c0-fd0e-11dc-95ff-0800200c9a66} application={d1bfe7d9-c01e-4237-998b-7b5f960a4314}
-    ```
+      ```
+        # This line says, load the nsBrowserGlue service of the contract id is @mozilla.org/browser/browserglue;1 for applications following
+        # application={ID_OF_DESKTOP_OR_FENNEC_OR_SOME_OTHER_BUILD_OF_FIREFOX}
+        category app-startup nsBrowserGlue service,@mozilla.org/browser/browserglue;1 application={3c2e2abc-06d4-11e1-ac3b-374f68613e61} application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} application={aa3c5121-dab2-40e2-81ca-7ea25febc110} application={a23983c0-fd0e-11dc-95ff-0800200c9a66} application={d1bfe7d9-c01e-4237-998b-7b5f960a4314}
+      ```
     
     
