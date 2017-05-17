@@ -1123,6 +1123,18 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
   - A class based main entry point used by most platforms.
   
 
+- Select Profile
+  - @ XREMain::XRE_mainStartup
+  - Initializes the profile and various other services. Called before `XREMain::XRE_mainRun`
+    ```cpp
+      rv = NS_NewToolkitProfileService(getter_AddRefs(mProfileSvc));
+      
+      // ......
+      
+      // In call of `SelectProfile`, we would lock profile
+      rv = SelectProfile(getter_AddRefs(mProfileLock), mProfileSvc, mNativeApp, &mStartOffline, &mProfileName);
+    ```
+
 - The "app-startup" event
   - @ XREMain::XRE_mainRun
     ```cpp
