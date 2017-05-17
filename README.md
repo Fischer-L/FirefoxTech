@@ -1114,4 +1114,4 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
 
 
 ## Firefox Entry Point
-- static int do_main(int argc, char* argv[], char* envp[]) @ browser/app/nsBrowserApp.cpp
+- int main(int argc, char* argv[], char* envp[]) @ browser/app/nsBrowserApp.cpp
