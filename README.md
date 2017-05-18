@@ -1104,6 +1104,11 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
 
 - toolkit/components/startup/nsAppStartup.cpp
 
+- Profile service
+  ```javascript
+    Components.classes["@mozilla.org/toolkit/profile-service;1"].getService(Components.interfaces.nsIToolkitProfileService)
+  ```
+
 
 ## Migrate Bookmarks/History from Other Browsers
 - The prefs for auto-migration: browser.migrate.automigrate.*
