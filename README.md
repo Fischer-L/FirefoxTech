@@ -1141,6 +1141,8 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
   - @ XREMain::XRE_mainStartup
   - Initializes the profile and various other services. Called before `XREMain::XRE_mainRun`
     ```cpp
+      // This would new the nsToolkitProfileService instance and duing the init of nsToolkitProfileService,
+      // the profiles.ini would be parsed to determine the default profile.
       rv = NS_NewToolkitProfileService(getter_AddRefs(mProfileSvc));
       
       // ......
@@ -1148,6 +1150,32 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
       // In call of `SelectProfile`, we would lock profile
       rv = SelectProfile(getter_AddRefs(mProfileLock), mProfileSvc, mNativeApp, &mStartOffline, &mProfileName);
     ```
+
+  - Reset Profile
+    - @ static nsresult SelectProfile(...)
+    - It would check if "-reset-profile" was passed in commandline, then reseting profile
+    ```cpp
+      ar = CheckArg("reset-profile", true);
+      // ......
+      if (ar == ARG_FOUND) {
+        gDoProfileReset = true;
+      }
+      
+      // ......
+      
+      if (gDoProfileReset) {
+        // If we're resetting a profile, create a new one and use it to startup.
+        // ......
+      }
+    ```
+    
+  - Restart to Reset Profile
+    - @ static nsresult SelectProfile(...)
+    - TBC: MOZ_RESET_PROFILE_RESTART
+
+  - Profile Migration
+    - @ static nsresult SelectProfile(...)
+    - TBC: gDoMigration
 
 - The "app-startup" event
   - @ XREMain::XRE_mainRun
