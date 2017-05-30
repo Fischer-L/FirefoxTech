@@ -1169,7 +1169,7 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
     
     
 ## Reset Profile
-- During XREMain::XRE_mainStartup
+- Checked during XREMain::XRE_mainStartup
 - Way #1: by commandline
   - @ static nsresult SelectProfile(...)
   - It would check if "--reset-profile" was passed in commandline, then set the reseting flag
@@ -1219,7 +1219,7 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
   
  
  ## Profile Migration
-- During XREMain::XRE_mainStartup
+- Checked during XREMain::XRE_mainStartup
 - Way #1: by commandline
   - @ static nsresult SelectProfile(...)
   - It would check if "--migration" was passed in commandline, then set the migration flag
