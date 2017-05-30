@@ -1151,62 +1151,6 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
       rv = SelectProfile(getter_AddRefs(mProfileLock), mProfileSvc, mNativeApp, &mStartOffline, &mProfileName);
     ```
 
-  - Reset Profile
-    - @ static nsresult SelectProfile(...)
-    - It would check if "-reset-profile" was passed in commandline, then reseting profile
-    ```cpp
-      ar = CheckArg("reset-profile", true);
-      // ......
-      if (ar == ARG_FOUND) {
-        gDoProfileReset = true;
-      }
-      
-      // ......
-      
-      if (gDoProfileReset) {
-        // If we're resetting a profile, create a new one and use it to startup.
-        // ......
-      }
-    ```
-    
-  - Restart to Reset Profile
-    - @ static nsresult SelectProfile(...)
-      
-      Would check the terminal env MOZ_RESET_PROFILE_RESTART arg
-      ```cpp
-        if (EnvHasValue("MOZ_RESET_PROFILE_RESTART")) {
-          gDoProfileReset = true;
-          gDoMigration = true;
-          SaveToEnv("MOZ_RESET_PROFILE_RESTART=");
-        }
-      ```
-      
-    - @ ResetProfile.jsm
-    
-      Would set the terminal env MOZ_RESET_PROFILE_RESTART arg and restart Firefox if user agreed
-      ```javascript
-        openConfirmationDialog(window) {
-          // Prompt the user to confirm.
-          let params = {
-            reset: false,
-          };
-          window.openDialog("chrome://global/content/resetProfile.xul", null,
-                            "chrome,modal,centerscreen,titlebar,dialog=yes", params);
-          if (!params.reset) return;
-
-          // Set the reset profile environment variable.
-          let env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
-          env.set("MOZ_RESET_PROFILE_RESTART", "1");
-
-          let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
-          appStartup.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
-        }
-      ```
-
-  - Profile Migration
-    - @ static nsresult SelectProfile(...)
-    - TBC: gDoMigration
-
 - The "app-startup" event
   - @ XREMain::XRE_mainRun
     ```cpp
@@ -1222,5 +1166,106 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
         # application={ID_OF_DESKTOP_OR_FENNEC_OR_SOME_OTHER_BUILD_OF_FIREFOX}
         category app-startup nsBrowserGlue service,@mozilla.org/browser/browserglue;1 application={3c2e2abc-06d4-11e1-ac3b-374f68613e61} application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} application={aa3c5121-dab2-40e2-81ca-7ea25febc110} application={a23983c0-fd0e-11dc-95ff-0800200c9a66} application={d1bfe7d9-c01e-4237-998b-7b5f960a4314}
       ```
+    
+    
+## Reset Profile
+- During XREMain::XRE_mainStartup
+- Way #1: by commandline
+  - @ static nsresult SelectProfile(...)
+  - It would check if "--reset-profile" was passed in commandline, then set the reseting flag
+  ```cpp
+    ar = CheckArg("reset-profile", true);
+    // ......
+    if (ar == ARG_FOUND) {
+      gDoProfileReset = true;
+    }
+  ```
+
+- Way #2: by user's agreement after restarting
+  - @ ResetProfile.jsm
+
+    Would set the terminal env MOZ_RESET_PROFILE_RESTART arg and restart Firefox if user agreed.
+    
+    This could be triggered on Firefox chrome UI somewhere
+    ```javascript
+      openConfirmationDialog(window) {
+        // Prompt the user to confirm.
+        let params = {
+          reset: false,
+        };
+        window.openDialog("chrome://global/content/resetProfile.xul", null,
+                          "chrome,modal,centerscreen,titlebar,dialog=yes", params);
+        if (!params.reset) return;
+
+        // Set the reset profile environment variable.
+        let env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
+        env.set("MOZ_RESET_PROFILE_RESTART", "1");
+
+        let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
+        appStartup.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
+      }
+    ```
+    
+  - @ static nsresult SelectProfile(...)
+
+    Would check the terminal env MOZ_RESET_PROFILE_RESTART arg during the startup path
+    ```cpp
+      if (EnvHasValue("MOZ_RESET_PROFILE_RESTART")) {
+        gDoProfileReset = true;
+        gDoMigration = true;
+        SaveToEnv("MOZ_RESET_PROFILE_RESTART=");
+      }
+    ```
+  
+ 
+ ## Profile Migration
+- During XREMain::XRE_mainStartup
+- Way #1: by commandline
+  - @ static nsresult SelectProfile(...)
+  - It would check if "--migration" was passed in commandline, then set the migration flag
+  ```cpp
+    ar = CheckArg("migration", true);
+    // ......
+    if (ar == ARG_FOUND) {
+      gDoMigration = true;
+    }
+  ```
+  
+- Way #2: by auto-migration if no profile found (for new user)
+  - @ static nsresult SelectProfile(...)
+    ```cpp
+      // Get profile count
+      uint32_t count;
+      rv = aProfileSvc->GetProfileCount(&count);
+      
+      // ......
+      
+      // Set up flags if no profile found
+      if (!count) {
+        gDoMigration = true;
+        gDoProfileReset = false;
+        // ......
+      }
+    ```
+
+- The migration works are implemented in JS
+  - IDL: nsIProfileMigrator.idl
+  - Implementation: ProfileMigrator.js
+  - @ XREMain::XRE_mainRun()
+    ```cpp
+      if (mAppData->flags & NS_XRE_ENABLE_PROFILE_MIGRATOR && gDoMigration) {
+        gDoMigration = false;
+        nsCOMPtr<nsIProfileMigrator> pm(do_CreateInstance(NS_PROFILEMIGRATOR_CONTRACTID));
+        if (pm) {
+          nsAutoCString aKey;
+          if (gDoProfileReset) {
+            // Automatically migrate from the current application if we just reset the profile.
+            aKey = MOZ_APP_NAME;
+          }
+          // In fact, this would invoke the JS implementation in ProfileMigrator.js
+          pm->Migrate(&mDirProvider, aKey, gResetOldProfileName);
+        }
+      }
+    ```
     
     
