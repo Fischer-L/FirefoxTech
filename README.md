@@ -1171,7 +1171,37 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
     
   - Restart to Reset Profile
     - @ static nsresult SelectProfile(...)
-    - TBC: MOZ_RESET_PROFILE_RESTART
+      
+      Would check the terminal env MOZ_RESET_PROFILE_RESTART arg
+      ```cpp
+        if (EnvHasValue("MOZ_RESET_PROFILE_RESTART")) {
+          gDoProfileReset = true;
+          gDoMigration = true;
+          SaveToEnv("MOZ_RESET_PROFILE_RESTART=");
+        }
+      ```
+      
+    - @ ResetProfile.jsm
+    
+      Would set the terminal env MOZ_RESET_PROFILE_RESTART arg and restart Firefox if user agreed
+      ```javascript
+        openConfirmationDialog(window) {
+          // Prompt the user to confirm.
+          let params = {
+            reset: false,
+          };
+          window.openDialog("chrome://global/content/resetProfile.xul", null,
+                            "chrome,modal,centerscreen,titlebar,dialog=yes", params);
+          if (!params.reset) return;
+
+          // Set the reset profile environment variable.
+          let env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
+          env.set("MOZ_RESET_PROFILE_RESTART", "1");
+
+          let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
+          appStartup.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
+        }
+      ```
 
   - Profile Migration
     - @ static nsresult SelectProfile(...)
