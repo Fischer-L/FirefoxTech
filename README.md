@@ -1113,6 +1113,7 @@ https://dxr.mozilla.org/mozilla-central/rev/0b255199db9d6a6f189b89b7906f99155bde
 ## Directory Service
 ```javacsript
 // "ProfD" = Profile dir
+// "UAppData" = User app data dir
 // "CurWorkD" = Current working dir
 var propKeyWord = "ProfD";
 var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is fine as well
