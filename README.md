@@ -1174,6 +1174,8 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
         category app-startup nsBrowserGlue service,@mozilla.org/browser/browserglue;1 application={3c2e2abc-06d4-11e1-ac3b-374f68613e61} application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} application={aa3c5121-dab2-40e2-81ca-7ea25febc110} application={a23983c0-fd0e-11dc-95ff-0800200c9a66} application={d1bfe7d9-c01e-4237-998b-7b5f960a4314}
       ```
     
+ - More details from Evelyn: https://www.evernote.com/shard/s97/sh/01f15d7f-b932-4fa5-b117-d67a7f8ceedb/4641809a0a79ee70
+ 
     
 ## Reset Profile
 - Checked during XREMain::XRE_mainStartup
