@@ -1034,6 +1034,12 @@ function sendPermissionRequest(request, chromeWindow = null) {
 [4] https://dxr.mozilla.org/mozilla-central/source/toolkit/components/urlformatter/nsURLFormatter.js
 
 
+## Add l10n support
+- The reference bug by :gasolin
+
+  Bug 1369291 - add l10n support for onboarding overlay;r=mossop,rexboy,pike
+
+
 ## Never Hard Code Brand Name
 1. Insert the brand name strings asset:
 
