@@ -1176,6 +1176,15 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
     
  - More details from Evelyn: https://www.evernote.com/shard/s97/sh/01f15d7f-b932-4fa5-b117-d67a7f8ceedb/4641809a0a79ee70
  
+ - Test checking what gets loaded during startup:
+   - An XPCOM module catching what gets loaded during startup:
+   
+     http://searchfox.org/mozilla-central/rev/2bcd258281da848311769281daf735601685de2d/browser/components/tests/startupRecorder.js
+   
+   - The test checking whitelisted and blacklisted scripts during startup
+     
+     https://dxr.mozilla.org/mozilla-central/source/browser/base/content/test/performance/browser_startup.js
+ 
     
 ## Reset Profile
 - Checked during XREMain::XRE_mainStartup
