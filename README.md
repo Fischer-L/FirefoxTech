@@ -1287,5 +1287,5 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
     ```
     
     
-# Firefox Refresh to about:welcomback page
+## Firefox Refresh to about:welcomback page
 https://github.com/Fischer-L/FirefoxTech/blob/master/Loading_Appcache_Manifest.md
