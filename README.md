@@ -262,6 +262,28 @@ Then utility functions are accessible from `OS.File`
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
  
  
+## Make the chrome popup always shown
+- Set the popup's `noautohide` attribute to "true"
+
+- In browser.js [1], it would handle the event and hide the popup if
+  1. the active element didn't contains or wasn't contained by the pop and
+  
+  2. the popup's `noautohide` attribute is "false"
+  
+     ```javascript
+     let position = elem.compareDocumentPosition(this._identityPopup);
+     if (!(position & (Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_CONTAINED_BY)) &&
+        !this._identityPopup.hasAttribute("noautohide")) {
+      // Hide the panel when focusing an element that is
+      // neither an ancestor nor descendant unless the panel has
+      // @noautohide (e.g. for a tour).
+      this._identityPopup.hidePopup();
+    }
+     ```
+     
+[1] https://dxr.mozilla.org/mozilla-central/rev/7d92f47379da55adf4da6d0b16398f5c629cf949/browser/base/content/browser.js#7723
+ 
+ 
 ## Firefox Startup
 ### On the 1st window loaded
 - After observing the browser-delayed-startup-finished event, then `_onFirstWindowLoaded` at [1] would be invoked.
