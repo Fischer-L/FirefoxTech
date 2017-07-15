@@ -273,12 +273,12 @@ Then utility functions are accessible from `OS.File`
      ```javascript
      let position = elem.compareDocumentPosition(this._identityPopup);
      if (!(position & (Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_CONTAINED_BY)) &&
-        !this._identityPopup.hasAttribute("noautohide")) {
-      // Hide the panel when focusing an element that is
-      // neither an ancestor nor descendant unless the panel has
-      // @noautohide (e.g. for a tour).
-      this._identityPopup.hidePopup();
-    }
+         !this._identityPopup.hasAttribute("noautohide")) {
+       // Hide the panel when focusing an element that is
+       // neither an ancestor nor descendant unless the panel has
+       // @noautohide (e.g. for a tour).
+       this._identityPopup.hidePopup();
+     }
      ```
      
 [1] https://dxr.mozilla.org/mozilla-central/rev/7d92f47379da55adf4da6d0b16398f5c629cf949/browser/base/content/browser.js#7723
