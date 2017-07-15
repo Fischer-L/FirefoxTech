@@ -266,7 +266,7 @@ Then utility functions are accessible from `OS.File`
 - Set the popup's `noautohide` attribute to "true"
 
 - In browser.js [1], it would handle the event and hide the popup if
-  1. the active element didn't contains or wasn't contained by the pop and
+  1. the active element didn't contains and wasn't contained by the pop, and
   
   2. the popup's `noautohide` attribute is "false"
   
