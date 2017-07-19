@@ -33,20 +33,26 @@ mk_add_options MOZ_OBJDIR=./objdir-frontend
   Set devtools.debugger.prompt-connection to false
 
 
-## Mochitest
+## Test
 - Run
 ```
 # For logging append one of three behind:
 #   - 2>/dev/null | grep TMP
 #   - 2>&1 | tee -a ./mochitest.log
 #   - --log-tbpl=./mochitest.log-tbpl
-./mach mochitest [FILE_PATH] --log-tbpl-level=DEBUG
+./mach test [FILE_PATH] --log-tbpl-level=DEBUG
 ```
 
-- Only test one specific directory to save time 
+- Only push one specific directory for TRY to save time 
 ```
 ./mach try -b do -p linux,linux64,macosx64,win32,win64 -t none [DIR_PATH] # like toolkit/components/passwordmgr/test/browser
 ```
+
+- Skip test
+  - `add_task().skip()` makes sure that the task in question is not run as part of the suite. This will be made very clear in the log output as well.
+  - `add_task().only()` makes sure that only the task in question is run, thus all the other tasks in that suite will be skipped. If `.only()` is called multiple times, it will run the last one on the stack.
+  
+  - See Bug 1380470 - Allow tasks to be skipped or only one task to run in all suites
 
 
 ## ESlint
