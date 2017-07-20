@@ -1318,3 +1318,7 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
 ## Firefox Refresh to about:welcomback page
 https://github.com/Fischer-L/FirefoxTech/blob/master/Firefox_Refresh_to_aboutWelcomback.md
 
+
+## Where Firefox decides the 1st-un pages
+- nsBrowserContentHandler.js
+- See https://bugzilla.mozilla.org/show_bug.cgi?id=1381982 
