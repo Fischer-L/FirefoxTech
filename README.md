@@ -1319,6 +1319,13 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
 https://github.com/Fischer-L/FirefoxTech/blob/master/Firefox_Refresh_to_aboutWelcomback.md
 
 
-## Where Firefox decides the 1st-un pages
+## Where Firefox decides the 1st-run pages
 - nsBrowserContentHandler.js
 - See https://bugzilla.mozilla.org/show_bug.cgi?id=1381982 
+
+
+## idleDispatch/idleDispatchToMainThread from JS
+- Bug 1353206 - expose requestIdleCallback (or similar) API to non-DOM JS execution contexts
+- Bug 1368072 - Expose IdleDispatch with timeout to JS
+- Usage Example: Bug 1357154 - If about:preferences is open on Windows, it will poll the OS to see if the default browser has changed every second
+
