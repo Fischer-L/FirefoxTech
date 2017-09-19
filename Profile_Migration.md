@@ -60,10 +60,12 @@
   - Implementation: ProfileMigrator.js
   - Usage:
     ```javascript
+      // JS
       let profileMigrator = Cc["@mozilla.org/toolkit/profile-migrator;1"].createInstance(Ci.nsIProfileMigrator);
       profileMigrator.migrate(aProfileStartup, aMigratorKey, aProfileToMigrate);
     ```
     ```cpp
+      // C++
       nsCOMPtr<nsIProfileMigrator> profileMigrator(do_CreateInstance(NS_PROFILEMIGRATOR_CONTRACTID));
       profileMigrator->migrate(aProfileStartup, aMigratorKey, aProfileToMigrate);
     ```
