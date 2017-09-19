@@ -1,5 +1,7 @@
 
 # Profile Migration
+
+## Works during startup
 - Checked during XREMain::XRE_mainStartup
 - Way #1: by commandline
   - @ static nsresult SelectProfile(...)
@@ -29,9 +31,7 @@
       }
     ```
 
-- The migration works are implemented in JS
-  - IDL: nsIProfileMigrator.idl
-  - Implementation: ProfileMigrator.js
+- Call the profile migrator to migrate profile
   - @ XREMain::XRE_mainRun()
     ```cpp
       if (mAppData->flags & NS_XRE_ENABLE_PROFILE_MIGRATOR && gDoMigration) {
