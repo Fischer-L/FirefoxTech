@@ -1,0 +1,50 @@
+
+# Profile Migration
+- Checked during XREMain::XRE_mainStartup
+- Way #1: by commandline
+  - @ static nsresult SelectProfile(...)
+  - It would check if "--migration" was passed in commandline, then set the migration flag
+  ```cpp
+    ar = CheckArg("migration", true);
+    // ......
+    if (ar == ARG_FOUND) {
+      gDoMigration = true;
+    }
+  ```
+  
+- Way #2: by auto-migration if no profile found (for new user)
+  - @ static nsresult SelectProfile(...)
+    ```cpp
+      // Get profile count
+      uint32_t count;
+      rv = aProfileSvc->GetProfileCount(&count);
+      
+      // ......
+      
+      // Set up flags if no profile found
+      if (!count) {
+        gDoMigration = true;
+        gDoProfileReset = false;
+        // ......
+      }
+    ```
+
+- The migration works are implemented in JS
+  - IDL: nsIProfileMigrator.idl
+  - Implementation: ProfileMigrator.js
+  - @ XREMain::XRE_mainRun()
+    ```cpp
+      if (mAppData->flags & NS_XRE_ENABLE_PROFILE_MIGRATOR && gDoMigration) {
+        gDoMigration = false;
+        nsCOMPtr<nsIProfileMigrator> pm(do_CreateInstance(NS_PROFILEMIGRATOR_CONTRACTID));
+        if (pm) {
+          nsAutoCString aKey;
+          if (gDoProfileReset) {
+            // Automatically migrate from the current application if we just reset the profile.
+            aKey = MOZ_APP_NAME;
+          }
+          // In fact, this would invoke the JS implementation in ProfileMigrator.js
+          pm->Migrate(&mDirProvider, aKey, gResetOldProfileName);
+        }
+      }
+    ```
