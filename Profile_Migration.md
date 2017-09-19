@@ -58,6 +58,14 @@
 - Entry point
   - IDL: nsIProfileMigrator.idl
   - Implementation: ProfileMigrator.js
+    ```
+      ProfileMigrator.prototype = {
+        // ProfileMigrator is REALLY just an entry point.
+        // The real works are performed in MigrationUtils.
+        migrate: MigrationUtils.startupMigration.bind(MigrationUtils),
+        ... ...
+      };
+    ```
   - Usage:
     ```javascript
       // JS
