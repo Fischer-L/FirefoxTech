@@ -54,3 +54,18 @@
 - Invoke the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` at MigrationUtils.jsm
   
 
+## Profile Migrators
+- Entry point
+  - IDL: nsIProfileMigrator.idl
+  - Implementation: ProfileMigrator.js
+  - Usage:
+    ```javascript
+      let profileMigrator = Cc["@mozilla.org/toolkit/profile-migrator;1"].createInstance(Ci.nsIProfileMigrator);
+      profileMigrator.migrate(aProfileStartup, aMigratorKey, aProfileToMigrate);
+    ```
+    ```cpp
+      nsCOMPtr<nsIProfileMigrator> profileMigrator(do_CreateInstance(NS_PROFILEMIGRATOR_CONTRACTID));
+      profileMigrator->migrate(aProfileStartup, aMigratorKey, aProfileToMigrate);
+    ```
+    
+  
