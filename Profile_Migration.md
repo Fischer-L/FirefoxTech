@@ -1,7 +1,8 @@
 
 # Profile Migration
 
-## Works during startup
+## Triggering appraoches
+### Triggered during startup
 - Checked during XREMain::XRE_mainStartup
 - Way #1: by commandline
   - @ static nsresult SelectProfile(...)
@@ -48,3 +49,8 @@
         }
       }
     ```
+
+### Triggered manually after startup
+- Invoke the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` at MigrationUtils.jsm
+  
+
