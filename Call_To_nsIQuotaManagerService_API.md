@@ -41,14 +41,44 @@
 - OriginOperationBase::Run
   
   OriginOperationBase would do task according the current state as well as advance the state after doing task.
-  For exmaple, if we started at the State_DirectoryOpenPending.
+  For exmaple, as we started at the State_Initializing.
   
   - OriginOperationBase::Run
     ```cpp
-        case State_DirectoryOpenPending: {
-          rv = DirectoryOpen();
-          break;
-        }
+      case State_Initializing: {
+        rv = InitOnMainThread();
+        break;
+      }
+    ```
+  
+  - OriginOperationBase::InitOnMainThread
+    - `nsresult rv = DoInitOnMainThread();`
+      - ClearOriginOp::DoInitOnMainThread
+        ```cpp
+          // This step is important.
+          // Our aClearAll flag takes effect here.
+          if (mParams.clearAll()) {
+            mOriginScope.SetFromPrefix(origin);
+          } else {
+            mOriginScope.SetFromOrigin(origin);
+          }
+        ```
+      
+    - After init on the main thread, advance the state from "State_Initializing" to "State_FinishingInit"
+      ```cpp
+        AdvanceState();
+        // Dispatch to the main thread to do `::Run` again
+        MOZ_ALWAYS_SUCCEEDS(mOwningThread->Dispatch(this, NS_DISPATCH_NORMAL));
+      ```
+      
+    - After a series of jobs and the states changes, we would arrive the "State_DirectoryOpenPending" state
+  
+  - OriginOperationBase::Run
+    ```cpp
+      case State_DirectoryOpenPending: {
+        rv = DirectoryOpen();
+        break;
+      }
     ```
 
  - OriginOperationBase::DirectoryOpen
@@ -136,7 +166,19 @@
                                        NS_ConvertUTF16toUTF8(leafName)))) {
         continue;
       }
+    ```
+      - OriginScope::MatchesOrigin
+        - Because of the aClearAll flag, OA dosen't matter here. We would continue to clear across OAs
+          ```cpp
+            // ... ...
+            else if (IsPrefix()) {
+              MOZ_ASSERT(mPrefix);
+              match = StringBeginsWith(aOther.mOriginAndAttributes->mOrigin, *mPrefix);
+            }
+            // ... ...
+          ```
       
+    ```cpp
       // ... ...
       
        for (uint32_t index = 0; index < 10; index++) {
