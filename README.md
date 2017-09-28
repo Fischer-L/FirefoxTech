@@ -1,5 +1,7 @@
 # FirefoxTech
-https://queue.taskcluster.net/v1/task/bTspkA-uR_KkMvdIxY4j8g/runs/0/artifacts/public/build/target.tar.bz2
+https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/target.zip
+https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/setup.exe
+https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/install/sea/target.installer.exe
 ## Build Commands
 - Artifact build Moz config
 ```
