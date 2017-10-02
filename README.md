@@ -1,16 +1,5 @@
 # FirefoxTech
 
-with solution
-https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/target.zip
-https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/setup.exe
-https://queue.taskcluster.net/v1/task/Gpybo_jxR3-ASbzGII3AQQ/runs/0/artifacts/public/build/install/sea/target.installer.exe
-
-without solution
-https://queue.taskcluster.net/v1/task/CbKWRfLTSrC8n1xRrECqDw/runs/0/artifacts/public/build/target.zip
-https://queue.taskcluster.net/v1/task/CbKWRfLTSrC8n1xRrECqDw/runs/0/artifacts/public/build/setup.exe
-https://queue.taskcluster.net/v1/task/CbKWRfLTSrC8n1xRrECqDw/runs/0/artifacts/public/build/install/sea/target.installer.exe
-
-
 ## Build Commands
 - Artifact build Moz config
 ```
@@ -1343,3 +1332,9 @@ https://github.com/Fischer-L/FirefoxTech/blob/master/Firefox_Refresh_to_aboutWel
 
 ## Call an nsIQuotaManagerService API
 https://github.com/Fischer-L/FirefoxTech/blob/master/Call_To_nsIQuotaManagerService_API.md
+
+
+## Firefox Data Stores
+Firefox uses what types of storage technology to store data: 
+
+https://github.com/mozilla/firefox-data-store-docs
