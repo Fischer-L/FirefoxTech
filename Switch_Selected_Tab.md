@@ -148,3 +148,5 @@
   - continue from the queued `onUnloadTimeout` call
   - 
   
+
+### Section: docShellIsActive
