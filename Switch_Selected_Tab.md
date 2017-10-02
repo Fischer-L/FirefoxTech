@@ -63,3 +63,58 @@
     gBrowser._getSwitcher().requestTab(toTab);
     // ... ...
     ```
+
+- `requestTab` of the tab switcher(`_getSwitcher`) @tabbrowser.xml#tabbrowser
+  - Warm the tab (disabled by Bug 1394455)
+  
+  - Suppress displayport of the requested tab and queue unload job
+    ```javascript
+    this.requestedTab = tab;
+    this.suppressDisplayPortAndQueueUnload(this.requestedTab, this.UNLOAD_DELAY);
+    ```  
+   
+- `suppressDisplayPortAndQueueUnload` of the tab switcher
+  - We don't want to paint the requested tab temporarily during siwtching tab
+    ```javascript
+    // tab is the requested tab
+    let browser = tab.linkedBrowser;
+    let fl = browser.frameLoader;
+    if (fl && fl.tabParent && !this.activeSuppressDisplayport.has(fl.tabParent)) {
+      // `suppressDisplayport` is nsITabParent::suppressDisplayport
+      fl.tabParent.suppressDisplayport(true);
+      this.activeSuppressDisplayport.add(fl.tabParent);
+    }
+    ```
+  
+  - Queue to unload unused tabs
+    ```javascript
+    // This won't run immediately so loading the requested tab should go first
+    this.unloadTimer = this.setTimer(() => this.onUnloadTimeout(), unloadTimeout);
+    ```
+    
+- `postAction` of the tab switcher
+  - Load the requested tab if required
+    ```javascript
+    // If we're not loading anything, try loading the requested tab.
+    let requestedState = this.getTabState(this.requestedTab);
+    if (!this.loadTimer && !this.minimizedOrFullyOccluded &&
+        (requestedState == this.STATE_UNLOADED ||
+         requestedState == this.STATE_UNLOADING)) {
+      this.loadRequestedTab();
+    }
+    ```
+    
+    - `loadRequestedTab` of the tab switcher
+      ```js
+      // Queue the `onLoadTimeout`
+      this.loadTimer = this.setTimer(() => this.onLoadTimeout(), this.TAB_SWITCH_TIMEOUT);
+      // Set the requested tab to the loading state
+      this.setTabState(this.requestedTab, this.STATE_LOADING);
+      ```
+    
+    
+    
+- `unloadNonRequiredTabs` of the tab switcher
+  - continue from the queued `onUnloadTimeout` call
+  - 
+  
