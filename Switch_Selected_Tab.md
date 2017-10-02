@@ -112,7 +112,37 @@
       this.setTabState(this.requestedTab, this.STATE_LOADING);
       ```
     
-    
+      - `setTabState` of the tab switcher
+        - Activate the requested tab's docShell. See more details at the docShellIsActive section.
+          ```js
+          let browser = tab.linkedBrowser;
+          let {tabParent} = browser.frameLoader;
+          if (state == this.STATE_LOADING) {
+            this.assert(!this.minimizedOrFullyOccluded);
+            browser.docShellIsActive = true;
+            if (!tabParent) {
+              // ASSUMPTION:
+              // Why sync call `onLayersReady` here?
+              // `tabParent` is one nsIFrameLoader::tabParent,
+              // which is null for non-remote frame [1].
+              // At `postAction` [2], it says for a non-remote tab, 
+              // sending layers to the compositor is sync operation.
+              // So activating a non-remote browser's docShell should be sync,
+              // we should fire layers ready sync here as well.
+              this.onLayersReady(browser);
+            }
+          } else if (state == this.STATE_UNLOADING) {
+            this.unwarmTab(tab);
+            browser.docShellIsActive = false;
+            if (!tabParent) {
+              this.onLayersCleared(browser);
+            }
+          }
+          ```
+
+          [1] http://searchfox.org/mozilla-central/rev/298033405057ca7aa5099153797467eceeaa08b5/dom/base/nsIFrameLoader.idl#35
+
+          [2] http://searchfox.org/mozilla-central/rev/298033405057ca7aa5099153797467eceeaa08b5/browser/base/content/tabbrowser.xml#4684
     
 - `unloadNonRequiredTabs` of the tab switcher
   - continue from the queued `onUnloadTimeout` call
