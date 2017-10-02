@@ -150,3 +150,25 @@
   
 
 ### Section: docShellIsActive
+- IDL: nsITabParent::docShellIsActive
+
+- Implementation: 
+  - Getter: TabParent::GetDocShellIsActive
+  - Setter: TabParent::SetDocShellIsActive
+  
+- In JS, call one <browser>'s `docShellIsActive`
+  ```js
+  gBrowser.selectedBrowser.docShellIsActive = true;
+  ```
+
+- TabParent::SetDocShellIsActive would receive the call from JS
+  - Send `Browser::Msg_SetDocShellIsActive__ID` msg to TabChild
+    ```cpp
+    Unused << SendSetDocShellIsActive(isActive, mPreserveLayers, mLayerTreeEpoch);
+    ```
+
+- TabChild::RecvSetDocShellIsActive
+  
+- TabChild::InternalSetDocShellIsActive
+
+
