@@ -164,11 +164,81 @@
 - TabParent::SetDocShellIsActive would receive the call from JS
   - Send `Browser::Msg_SetDocShellIsActive__ID` msg to TabChild
     ```cpp
+    // `mPreserveLayers` defaults to false and if false and deactiving, then tab would be hidden in the end.
+    // `mLayerTreeEpoch` is used to rule out the old request.
     Unused << SendSetDocShellIsActive(isActive, mPreserveLayers, mLayerTreeEpoch);
     ```
 
 - TabChild::RecvSetDocShellIsActive
+  - Receive the ipc call from TabParent
+    ```cpp
+    // Since requests to change the active docshell come in from both the hang
+    // monitor channel and the PContent channel, we have an ordering problem. This
+    // code ensures that we respect the order in which the requests were made and
+    // ignore stale requests.
+    if (mLayerObserverEpoch >= aLayerObserverEpoch) {
+      return IPC_OK();
+    }
+    mLayerObserverEpoch = aLayerObserverEpoch;
+
+    // ... ...
+    ```
   
 - TabChild::InternalSetDocShellIsActive
+  ```cpp
+  // ... ...
+  
+  nsCOMPtr<nsIDocShell> docShell = do_GetInterface(WebNavigation());
+  
+  // ... ...
+  
+  if (aIsActive) {
+    MakeVisible(); // Make tab visible
 
+    if (!docShell) {
+      return;
+    }
+
+    // We don't use TabChildBase::GetPresShell() here because that would create
+    // a content viewer if one doesn't exist yet. Creating a content viewer can
+    // cause JS to run, which we want to avoid. nsIDocShell::GetPresShell
+    // returns null if no content viewer exists yet.
+    if (nsCOMPtr<nsIPresShell> presShell = docShell->GetPresShell()) {
+      if (nsIFrame* root = presShell->FrameConstructor()->GetRootFrame()) {
+        FrameLayerBuilder::InvalidateAllLayersForFrame(
+          nsLayoutUtils::GetDisplayRootFrame(root));
+        root->SchedulePaint();
+      }
+
+      Telemetry::AutoTimer<Telemetry::TABCHILD_PAINT_TIME> timer;
+      // If we need to repaint, let's do that right away. No sense waiting until
+      // we get back to the event loop again. We suppress the display port so that
+      // we only paint what's visible. This ensures that the tab we're switching
+      // to paints as quickly as possible.
+      APZCCallbackHelper::SuppressDisplayport(true, presShell);
+      if (nsContentUtils::IsSafeToRunScript()) {
+        WebWidget()->PaintNowIfNeeded();
+      } else {
+        RefPtr<nsViewManager> vm = presShell->GetViewManager();
+        if (nsView* view = vm->GetRootView()) {
+          presShell->Paint(view, view->GetBounds(), nsIPresShell::PAINT_LAYERS);
+        }
+      }
+      APZCCallbackHelper::SuppressDisplayport(false, presShell);
+    }
+  } else if (!aPreserveLayers) {
+    MakeHidden();
+  }
+  ```
+
+- TabParent::SetDocShellIsActive
+  - Force painting after sending `Browser::Msg_SetDocShellIsActive__ID` ipc msg
+    ```cpp 
+    // Ask the child to repaint using the PHangMonitor channel/thread (which may
+    // be less congested).
+    if (isActive) {
+      ContentParent* cp = Manager()->AsContentParent();
+      cp->ForceTabPaint(this, mLayerTreeEpoch);
+    }
+    ```
 
