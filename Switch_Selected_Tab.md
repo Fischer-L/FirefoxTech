@@ -158,6 +158,7 @@
   
 - In JS, call one `<browser>`'s `docShellIsActive`
   ```js
+  // This would have the browser visible and painted.
   gBrowser.selectedBrowser.docShellIsActive = true;
   ```
 
