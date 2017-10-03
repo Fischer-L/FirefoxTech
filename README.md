@@ -267,7 +267,11 @@ Then utility functions are accessible from `OS.File`
  
   ![tab image](https://raw.githubusercontent.com/Fischer-L/FirefoxTech/master/img/tab.png)
  
- 
+
+## Switch selected tab
+https://github.com/Fischer-L/FirefoxTech/blob/master/Switch_Selected_Tab.md
+
+
 ## Make the chrome popup always shown
 - Set the popup's `noautohide` attribute to "true"
 
