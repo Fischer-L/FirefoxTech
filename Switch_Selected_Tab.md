@@ -30,21 +30,27 @@
 
 - `selectedIndex` of `<tabs>`
   - Update tabs' selected states
-    - http://searchfox.org/mozilla-central/rev/f6dc0e40b51a37c34e1683865395e72e7fca592c/toolkit/content/widgets/tabbox.xml#397
+    ```js
+    var alreadySelected = tab.selected;
+    Array.forEach(this.childNodes, function(aTab) {
+      if (aTab.selected && aTab != tab)
+        aTab._selected = false;
+    });
+    tab._selected = true;
+    ```
 
   - Update selected panel
-    - http://searchfox.org/mozilla-central/rev/f6dc0e40b51a37c34e1683865395e72e7fca592c/toolkit/content/widgets/tabbox.xml#411
-      ```javascript
-      // linkedPanel is `<notificationbox>`(holding browser) under `<tabpanels>` under `<tabbox>` under `<tabbrowser>`
-      let linkedPanel = this.getRelatedElement(tab);
-      if (linkedPanel) {
-        this.tabbox.setAttribute("selectedIndex", val);
-        
-        // tabpanels is `<tabpanels>`
-        // This will cause an onselect event to fire for the tabpanel element.
-        this.tabbox.tabpanels.selectedPanel = linkedPanel;
-      }
-      ```
+    ```js
+    // linkedPanel is `<notificationbox>`(holding browser) under `<tabpanels>` under `<tabbox>` under `<tabbrowser>`
+    let linkedPanel = this.getRelatedElement(tab);
+    if (linkedPanel) {
+      this.tabbox.setAttribute("selectedIndex", val);
+
+      // tabpanels is `<tabpanels>`
+      // This will cause an onselect event to fire for the tabpanel element.
+      this.tabbox.tabpanels.selectedPanel = linkedPanel;
+    }
+    ```
     
 - `selectedPanel` of `<tabpanels>` @tabbrowser.xml#tabbrowser-tabpanels > tabbox.xml#tabpanels
   - Find the index of selected panel in the DOM(`<tabpanels>`)
@@ -62,6 +68,18 @@
     // ... ...
     gBrowser._getSwitcher().requestTab(toTab);
     // ... ...
+    ```
+    
+  - P2: Important! Fire the select event so that the tab switcher later could know time to adjust tab focus
+    ```js
+    // ... ...
+    this._selectedPanel = newPanel;
+    if (this._selectedPanel != panel) {
+      var event = document.createEvent("Events");
+      event.initEvent("select", true, true);
+      this.dispatchEvent(event);
+      this._selectedIndex = val;
+    }
     ```
 
 - `requestTab` of the tab switcher(`_getSwitcher`) @tabbrowser.xml#tabbrowser
@@ -144,10 +162,13 @@
           
           [3] http://searchfox.org/mozilla-central/rev/a4702203522745baff21e519035b6c946b7d710d/browser/base/content/tabbrowser.xml#5069
     
-  - Decide which tab to display, such as a blank tab, spinner tab during switching tab
+  - Decide which tab to display, such as a blank tab, spinner tab, or requested tab, then switch to it
     ```js
     this.updateDisplay();
     ```
+    
+    - `updateDisplay` of the tab switcher
+      - TMP: tabPanel.setAttribute("selectedIndex", index); matters
     
   - Maybe finish
     ```js
