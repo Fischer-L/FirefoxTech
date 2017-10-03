@@ -86,7 +86,7 @@
     }
     ```
   
-  - Queue to unload unused tabs
+  - P1: Queue to unload unused tabs. See Section: onUnloadTimeout
     ```javascript
     // This won't run immediately so loading the requested tab should go first
     this.unloadTimer = this.setTimer(() => this.onUnloadTimeout(), unloadTimeout);
@@ -123,12 +123,10 @@
             if (!tabParent) {
               // ASSUMPTION:
               // Why sync call `onLayersReady` here?
-              // `tabParent` is one nsIFrameLoader::tabParent,
-              // which is null for non-remote frame [1].
-              // At `postAction` [2], it says for a non-remote tab, 
-              // sending layers to the compositor is sync operation.
-              // So activating a non-remote browser's docShell should be sync,
-              // we should fire layers ready sync here as well.
+              // `tabParent` is one nsIFrameLoader::tabParent, which is null for non-remote frame [1].
+              // At `postAction` [2], it says for a non-remote tab, sending layers to the compositor is sync operation.
+              // So activating an non-remote browser docShell should be sync, we should hanlde onLayersReady here right way.
+              // The remote case is async. We will wait for "MozLayerTreeReady"[3] event to do handling.
               this.onLayersReady(browser);
             }
           } else if (state == this.STATE_UNLOADING) {
@@ -143,10 +141,46 @@
           [1] http://searchfox.org/mozilla-central/rev/298033405057ca7aa5099153797467eceeaa08b5/dom/base/nsIFrameLoader.idl#35
 
           [2] http://searchfox.org/mozilla-central/rev/298033405057ca7aa5099153797467eceeaa08b5/browser/base/content/tabbrowser.xml#4684
+          
+          [3] http://searchfox.org/mozilla-central/rev/a4702203522745baff21e519035b6c946b7d710d/browser/base/content/tabbrowser.xml#5069
     
+  - Decide which tab to display, such as a blank tab, spinner tab during switching tab
+    ```js
+    this.updateDisplay();
+    ```
+    
+  - Maybe finish
+    ```js
+    // ... ...
+    
+    // Unload the redundant warming tabs
+    if (numWarming > this.tabbrowser.tabWarmingMax) {
+      this.logState("Hit tabWarmingMax");
+      if (this.unloadTimer) {
+        this.clearTimer(this.unloadTimer);
+      }
+      this.unloadNonRequiredTabs();
+    }
+    
+    // There still might be some not-yet-unloaded out there.
+    // The `onUnloadTimeout1 scheduled in the P1 position would help us to unload them, then finish.
+    if (numPending == 0) {
+      this.finish();
+    }
+    ```
+    
+### Section: onUnloadTimeout
+- `onUnloadTimeout` of the tab switcher
+
 - `unloadNonRequiredTabs` of the tab switcher
-  - continue from the queued `onUnloadTimeout` call
-  - 
+  
+  If there are any non-visible and non-requested tabs in STATE_LOADED, sets them to STATE_UNLOADING. 
+  
+  Also queues up the unloadTimer to run onUnloadTimeout if there are still tabs in the process of unloading.
+  
+- `postActions` of the tab switcher
+   
+   This call would finish the tab switch if no more pending unloaded tabs out there
   
 
 ### Section: docShellIsActive
@@ -158,7 +192,7 @@
   
 - In JS, call one `<browser>`'s `docShellIsActive`
   ```js
-  // This would have the browser visible and painted.
+  // This would have the browser visible and being painted.
   gBrowser.selectedBrowser.docShellIsActive = true;
   ```
 
