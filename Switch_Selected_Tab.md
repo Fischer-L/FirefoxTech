@@ -156,7 +156,7 @@
   - Getter: TabParent::GetDocShellIsActive
   - Setter: TabParent::SetDocShellIsActive
   
-- In JS, call one <browser>'s `docShellIsActive`
+- In JS, call one `<browser>`'s `docShellIsActive`
   ```js
   gBrowser.selectedBrowser.docShellIsActive = true;
   ```
