@@ -360,7 +360,7 @@
   - Reveal the below tab from the top tab, for example
     ```xml
     <!--  The total width is 1000px -->
-    <tabpanels type="display: -moz-stack">
+    <tabpanels style="display: -moz-stack">
       <!-- 500px right margin makes this panel take 500px left side -->
       <notificationbox id="panel-1" style="margin-right: 500px">
         <!--  This broswer's docShell has to be active -->
