@@ -358,7 +358,7 @@
   - Set 2 tab's browsers' docShell as active
   
   - Reveal the below tab from the top tab, for example
-    ```html
+    ```xml
     <!--  The total width is 1000px -->
     <tabpanels type="display: -moz-stack">
       <!-- 500px right margin makes this panel take 500px left side -->
