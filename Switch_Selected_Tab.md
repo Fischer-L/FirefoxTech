@@ -304,3 +304,7 @@
     ```
 
 ### Section: -moz-deck and -moz-stack
+- Both are XUL display type. `display: -moz-deck` or `display: -moz-stack`.
+
+#### -moz-deck
+
