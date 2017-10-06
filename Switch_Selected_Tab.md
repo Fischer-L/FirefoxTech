@@ -168,10 +168,12 @@
     ```
     
     - `updateDisplay` of the tab switcher
-      - Switch to and make the requested tab visible. See Section: -moz-deck and -moz-stack
+      - Switch to the requested tab visible. This makes other tabs' frames not being rendered. 
+        If wanted to render multiple tabs' frames at the same time, would need `display: -moz-stack`.
+        See Section: -moz-deck and -moz-stack.
         ```js
         // If the display of `<tabpanels>` is `-moz-deck`(by default),
-        // updating the "selectedIndex" attirbute would switch to the visible tab 
+        // updating the "selectedIndex" attirbute would switch to and make the requested tab visible
         tabPanel.setAttribute("selectedIndex", index);
         ```
     
