@@ -168,9 +168,9 @@
     ```
     
     - `updateDisplay` of the tab switcher
-      - Switch to and make the requested tab visible
+      - Switch to and make the requested tab visible. See Section: -moz-deck and -moz-stack
         ```js
-        // If the display of `<tabpanels>` is `-moz-deck` (by default),
+        // If the display of `<tabpanels>` is `-moz-deck`(by default),
         // updating the "selectedIndex" attirbute would switch to the visible tab 
         tabPanel.setAttribute("selectedIndex", index);
         ```
@@ -303,3 +303,4 @@
     }
     ```
 
+### Section: -moz-deck and -moz-stack
