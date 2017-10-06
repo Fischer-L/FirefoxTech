@@ -313,7 +313,7 @@
 #### -moz-deck
 - The representing frame class is `nsDeckFrame` @ nsDeckFrame.cpp
 
-- Only could display one frame at one time
+- Only could draw one frame at one time
 
 - While xul element's "selectedIndex" changed, it would observer and then update the displayed frame
   - nsDeckFrame::AttributeChanged
@@ -348,6 +348,36 @@
       index = value.ToInteger(&error);
     }
     ```
+
+#### -moz-stack
+- The representing frame class is `nsStackFrame` @ nsStackFrame.cpp
+
+- Basically frames are on top of each other one by one and could draw multiple frames at the same time.
+
+- To render 2 or more tab's frames at the same time, we need
+  - Set 2 tab's browsers' docShell as active
+  
+  - Reveal the below tab from the top tab, for example
+    ```html
+    <!--  The total width is 1000px -->
+    <tabpanels type="display: -moz-stack">
+      <!-- 500px right margin makes this panel take 500px left side -->
+      <notificationbox id="panel-1" style="margin-right: 500px">
+        // ... ...
+        <!--  This broswer's docShell has to be active -->
+        <browser id="browser-1" ></browser>
+      </notificationbox>
+      <!-- 500px left margin makes this panel take 500px right side
+           so that could reveal the #panel-1 beath it on the half left side. -->
+      <notificationbox id="panel-2" style="margin-left: 500px">
+        // ... ...
+        <!--  This broswer's docShell has to be active -->
+        <browser id="browser-2></browser>
+      </notificationbox>
+    </tabpanels>
+    ```
+    
+    
 
 
 
