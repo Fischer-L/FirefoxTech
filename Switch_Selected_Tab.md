@@ -305,6 +305,47 @@
 
 ### Section: -moz-deck and -moz-stack
 - Both are XUL display type. `display: -moz-deck` or `display: -moz-stack`.
+  [1] http://searchfox.org/mozilla-central/rev/7ba03cebf1dcf3b4c40c85a4efad42a5022cf1ec/layout/style/nsStyleConsts.h#423
+  [2] http://searchfox.org/mozilla-central/rev/8efd128b48cdae3a6c6862795ce618aa1ca1c0b4/layout/base/nsCSSFrameConstructor.cpp#4419
 
 #### -moz-deck
+- The representing frame class is `nsDeckFrame` @ nsDeckFrame.cpp
+
+- Only could display one frame at one time
+
+- While xul element's "selectedIndex" changed, it would observer and then update the displayed frame
+  - nsDeckFrame::AttributeChanged
+    ```cpp
+     // if the index changed hide the old element and make the new element visible
+    if (aAttribute == nsGkAtoms::selectedIndex) {
+      IndexChanged();
+    }
+    ```
+
+  - nsDeckFrame::IndexChanged
+    ```cpp
+    //did the index change?
+    int32_t index = GetSelectedIndex();
+    if (index == mIndex)
+      return;
+
+    // redraw
+    InvalidateFrame();
+    
+    // ... ...
+    ```
+    
+  - nsDeckFrame::GetSelectedIndex
+    ```cpp
+    // get the index attribute
+    nsAutoString value;
+    if (mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::selectedIndex, value))
+    {
+      nsresult error;
+      // convert it to an integer
+      index = value.ToInteger(&error);
+    }
+    ```
+
+
 
