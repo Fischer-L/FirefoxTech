@@ -363,14 +363,12 @@
     <tabpanels type="display: -moz-stack">
       <!-- 500px right margin makes this panel take 500px left side -->
       <notificationbox id="panel-1" style="margin-right: 500px">
-        // ... ...
         <!--  This broswer's docShell has to be active -->
         <browser id="browser-1" ></browser>
       </notificationbox>
       <!-- 500px left margin makes this panel take 500px right side
            so that could reveal the #panel-1 beath it on the half left side. -->
       <notificationbox id="panel-2" style="margin-left: 500px">
-        // ... ...
         <!--  This broswer's docShell has to be active -->
         <browser id="browser-2></browser>
       </notificationbox>
