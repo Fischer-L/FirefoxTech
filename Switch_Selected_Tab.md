@@ -168,7 +168,12 @@
     ```
     
     - `updateDisplay` of the tab switcher
-      - TMP: tabPanel.setAttribute("selectedIndex", index); matters
+      - Switch to and make the requested tab visible
+        ```js
+        // If the display of `<tabpanels>` is `-moz-deck` (by default),
+        // updating the "selectedIndex" attirbute would switch to the visible tab 
+        tabPanel.setAttribute("selectedIndex", index);
+        ```
     
   - Maybe finish
     ```js
