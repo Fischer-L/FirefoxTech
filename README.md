@@ -1342,3 +1342,10 @@ https://github.com/Fischer-L/FirefoxTech/blob/master/Call_To_nsIQuotaManagerServ
 Firefox uses what types of storage technology to store data: 
 
 https://github.com/mozilla/firefox-data-store-docs
+
+
+## Devtool Actor
+https://bugzilla.mozilla.org/show_bug.cgi?id=1401343
+
+
+
