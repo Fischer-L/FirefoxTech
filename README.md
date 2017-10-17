@@ -123,6 +123,11 @@ $ rr replay -p <pid>
 - http://rr-project.org
 
 
+## Still want to install a legacy Boostrapped add-on?
+- Set extensions.legacy.enabled to true
+- Set xpinstall.signatures.required to false
+- Open about:debugging then load temporary add-on
+
 ## Telemetry
 ### Set probe for executing time
 ```
