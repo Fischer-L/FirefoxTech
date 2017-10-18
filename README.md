@@ -243,6 +243,13 @@ Then utility functions are accessible from `OS.File`
 [1] A good example from :kanru - Bug 1336961: https://bugzilla.mozilla.org/show_bug.cgi?id=1336919
 
 
+## Get Chrome Window
+```js
+let WM = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
+let chromeWindow = WM.getMostRecentWindow("navigator:browser"); 
+```
+  
+  
 ## FirefoxBrowser / tabbrowser / browser / tabs / tab
 ### FirefoxBrowser
 `browser/base/content/browser.xul` is where FirefoxBrowser exists. So-called FirefoxBrowser is the most top-level, entire firefox browser UI. There is a `browser/base/content/hiddenWindow.xul` as well
