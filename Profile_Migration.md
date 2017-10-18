@@ -1,39 +1,35 @@
 
 # Profile Migration
 
-## Triggering appraoches
-### Triggered during startup
+## Triggering approaches
+### Triggered during startup by commandline
+- `$ <FF_FOLDER>/firefox --migration` (on Windows `-migration`)
+
 - Checked during XREMain::XRE_mainStartup
-- Way #1: by commandline
-  - @ static nsresult SelectProfile(...)
-  - It would check if "--migration" was passed in commandline, then set the migration flag
-  ```cpp
+  - `SelectProfile` checks if "--migration" is passed in commandline, then set the migration flag @nsAppRunner.cpp
+    ```cpp
     ar = CheckArg("migration", true);
     // ......
     if (ar == ARG_FOUND) {
       gDoMigration = true;
     }
-  ```
-  
-- Way #2: by auto-migration if no profile found (for new user)
-  - @ static nsresult SelectProfile(...)
-    ```cpp
-      // Get profile count
-      uint32_t count;
-      rv = aProfileSvc->GetProfileCount(&count);
-      
-      // ......
-      
-      // Set up flags if no profile found
-      if (!count) {
-        gDoMigration = true;
-        gDoProfileReset = false;
-        // ......
-      }
     ```
 
-- Call the profile migrator to migrate profile
-  - @ XREMain::XRE_mainRun()
+    - But will be disabled if no profile found (for fresh install)
+      ```cpp
+      uint32_t count;
+      rv = aProfileSvc->GetProfileCount(&count);
+
+      // ......
+
+      if (!count) {
+        // For a fresh install, we would like to let users decide
+        // to do profile migration on their own later after using.
+        gDoMigration = false;
+        gDoProfileReset = false;
+      ```
+
+  - In `XREMain::XRE_mainRun`, call the profile migrator to migrate profile
     ```cpp
       if (mAppData->flags & NS_XRE_ENABLE_PROFILE_MIGRATOR && gDoMigration) {
         gDoMigration = false;
@@ -50,9 +46,11 @@
       }
     ```
 
-### Triggered manually after startup
-- Invoke the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` at MigrationUtils.jsm
+### Triggered after startup
+- Invoke the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` @ MigrationUtils.jsm
   
+### Triggered for profile reset
+
 
 ## Profile Migrators
 - Entry point
