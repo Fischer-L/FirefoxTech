@@ -142,4 +142,21 @@
       appStartup.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
       ```
   
-  - 
+  - During startup `SelectProfile` @ nsAppRunner.cpp
+    - Detecs the env arg then set the global variable
+      ```cpp
+      if (EnvHasValue("MOZ_RESET_PROFILE_RESTART")) {
+        gDoProfileReset = true;
+        gDoMigration = true;
+        SaveToEnv("MOZ_RESET_PROFILE_RESTART=");
+        // We only want to restore the previous session if the profile refresh was
+        // triggered by user. And if it was a user-triggered profile refresh
+        // through, say, the safeMode dialog or the troubleshooting page, the MOZ_RESET_PROFILE_RESTART
+        // env variable would be set. Hence we set MOZ_RESET_PROFILE_MIGRATE_SESSION here so that
+        // Firefox profile migrator would migrate old session data later.
+        SaveToEnv("MOZ_RESET_PROFILE_MIGRATE_SESSION=1");
+      }
+      ```
+      
+  - See the section of Reset by commandline for the rest
+      
