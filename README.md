@@ -1231,56 +1231,10 @@ var file = Services.dirsvc.get(propKeyWord, Ci.nsILocalFile); // Ci.nsIFile is f
  
     
 ## Reset Profile
-- Checked during XREMain::XRE_mainStartup
-- Way #1: by commandline
-  - @ static nsresult SelectProfile(...)
-  - It would check if "--reset-profile" was passed in commandline, then set the reseting flag
-  ```cpp
-    ar = CheckArg("reset-profile", true);
-    // ......
-    if (ar == ARG_FOUND) {
-      gDoProfileReset = true;
-    }
-  ```
+https://github.com/Fischer-L/FirefoxTech/blob/master/Profile_Reset.md
 
-- Way #2: by user's agreement after restarting
-  - @ ResetProfile.jsm
-
-    Would set the terminal env MOZ_RESET_PROFILE_RESTART arg and restart Firefox if user agreed.
-    
-    This could be triggered on Firefox chrome UI somewhere
-    ```javascript
-      openConfirmationDialog(window) {
-        // Prompt the user to confirm.
-        let params = {
-          reset: false,
-        };
-        window.openDialog("chrome://global/content/resetProfile.xul", null,
-                          "chrome,modal,centerscreen,titlebar,dialog=yes", params);
-        if (!params.reset) return;
-
-        // Set the reset profile environment variable.
-        let env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
-        env.set("MOZ_RESET_PROFILE_RESTART", "1");
-
-        let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
-        appStartup.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
-      }
-    ```
-    
-  - @ static nsresult SelectProfile(...)
-
-    Would check the terminal env MOZ_RESET_PROFILE_RESTART arg during the startup path
-    ```cpp
-      if (EnvHasValue("MOZ_RESET_PROFILE_RESTART")) {
-        gDoProfileReset = true;
-        gDoMigration = true;
-        SaveToEnv("MOZ_RESET_PROFILE_RESTART=");
-      }
-    ```
-  
  
- ## Profile Migration
+## Profile Migration
 - Checked during XREMain::XRE_mainStartup
 - Way #1: by commandline
   - @ static nsresult SelectProfile(...)
