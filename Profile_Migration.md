@@ -197,6 +197,80 @@
     ```
   
 - `MigrationUtils.showMigrationWizard`
+  ```js
+  Services.ww.openWindow(aOpener,
+                         "chrome://browser/content/migration/migration.xul",
+                         "_blank",
+                         features,
+                         params);
+  ```
+
+- browser/components/migration/content/migration.xul
+  ```xml
+  <wizard id="migrationWizard"
+          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          windowtype="Browser:MigrationWizard"
+          title="&migrationWizard.title;"
+          onload="MigrationWizard.init()"
+          onunload="MigrationWizard.uninit()"
+          style="width: 40em;"
+          buttons="accept,cancel"
+          branded="true">
+    <script type="application/javascript" src="chrome://browser/content/migration/migration.js"/>
+  ```
+  
+  - XBL: /toolkit/content/widgets/wizard.xml
+  
+  - Page advance and rewind
+    Each `<wizardpage>` should handle event on page advancing/rewinding
+    ```xml
+    // ... ...
+    
+    <wizardpage id="importSource" pageid="importSource" next="selectProfile"
+                label="&importSource.title;"
+                onpageadvanced="return MigrationWizard.onImportSourcePageAdvanced();">
+      // ... ...
+    </wizardpage>
+    
+    <wizardpage id="selectProfile" pageid="selectProfile" label="&selectProfile.title;"
+                next="importItems"
+                onpageshow="return MigrationWizard.onSelectProfilePageShow();"
+                onpagerewound="return MigrationWizard.onSelectProfilePageRewound();"
+                onpageadvanced="return MigrationWizard.onSelectProfilePageAdvanced();">
+      // ... ...
+    </wizardpage>
+
+    <wizardpage id="importItems" pageid="importItems" label="&importItems.title;"
+                next="homePageImport"
+                onpageshow="return MigrationWizard.onImportItemsPageShow();"
+                onpagerewound="return MigrationWizard.onImportItemsPageRewound();"
+                onpageadvanced="return MigrationWizard.onImportItemsPageAdvanced();"
+                oncommand="MigrationWizard.onImportItemCommand();">
+      // ... ...
+    </wizardpage>
+    
+    // ... ...
+    ```
+    
+    - Advance to the next page: call `advance` of `<wizard>`
+      - `pagehide` event is fired on the `currentPage`, then
+      - `pageadvanced` event is fired on the `currentPage`, then
+      - let `currentPage` be the next page, then
+      - `pageshow` event is fired on the `currentPage`
+      
+    - Rewind to the previous page: call `rewind` of `<wizard>`
+      - `pagehide` event is fired on the `currentPage`, then
+      - `pagerewound` event is fired on the `currentPage`, then
+      - `wizardback` event is fired on the `<wizard>`, then
+      - let `currentPage` be the previous page, then
+      - `pageshow` event is fired on the `currentPage`
+
+- `MigrationWizard.init` @ migration.js
+  - Start the 1st migration wizard page
+    ```js
+    this.onImportSourcePageShow();
+    ```
+
 
 
 ## Migrator Interface
