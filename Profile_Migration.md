@@ -81,7 +81,7 @@
   - DO NOT call it directly
     ```js
     /**
-     * Show the migration wizard for startup-migration.  This should only be
+     * Show the migration wizard for startup-migration. This should only be
      * called by ProfileMigrator (see ProfileMigrator.js), which implements
      * nsIProfileMigrator.
      * 
@@ -128,9 +128,77 @@
         this._migrators.set(aKey, migrator);
         ```
     
+    - `MigrationUtils.getMigratorKeyForDefaultBrowser`
+      - Get user's default application for HTTP and map it to the browser we know
+        ```js
+        // Canary uses the same description as Chrome so we can't distinguish them.
+        const APP_DESC_TO_KEY = {
+          "Internet Explorer":                 "ie",
+          "Microsoft Edge":                    "edge",
+          "Safari":                            "safari",
+          "Firefox":                           "firefox",
+          "Nightly":                           "firefox",
+          "Google Chrome":                     "chrome",  // Windows, Linux
+          "Chrome":                            "chrome",  // OS X
+          "Chromium":                          "chromium", // Windows, OS X
+          "Chromium Web Browser":              "chromium", // Linux
+          "360\u5b89\u5168\u6d4f\u89c8\u5668": "360se",
+        };
+
+        let key = "";
+        try {
+          let browserDesc = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
+                            .getService(Ci.nsIExternalProtocolService).getApplicationDescription("http");
+          key = APP_DESC_TO_KEY[browserDesc] || "";
+          // Handle devedition, as well as "FirefoxNightly" on OS X.
+          if (!key && browserDesc.startsWith("Firefox")) {
+            key = "firefox";
+          }
+        } catch (ex) {
+          Cu.reportError("Could not detect default browser: " + ex);
+        }
+        
+        // ... ...
+        
+        return key;
+        ```
+      
+  - Check if we are doing profile refresh
+    ```js 
+    // If comes here because of profile refresh, `migratorKey` will be `MOZ_APP_NAME`.
+    // So very important not to call `MigrationUtils.startupMigration` directly
+    let isRefresh = migrator && skipSourcePage && migratorKey == AppConstants.MOZ_APP_NAME;
+    ```
+    
+    - Only do auto migration if it is enabled and this is not profile refresh
+      ```js
+      if (!isRefresh && AutoMigrate.enabled) {
+        try {
+          AutoMigrate.migrate(aProfileStartup, migratorKey, aProfileToMigrate);
+          return;
+        } catch (ex) {
+          // If automigration failed, continue and show the dialog.
+          Cu.reportError(ex);
+        }
+      }
+      ```
+    
+  - Bring up the migration wizard
+    ```js
+    let params = [
+      migrationEntryPoint,
+      migratorKey,
+      migrator,
+      aProfileStartup,
+      skipSourcePage,
+      aProfileToMigrate,
+    ];
+    this.showMigrationWizard(null, params);
+    ```
   
-  
-  
+- `MigrationUtils.showMigrationWizard`
+
+
 ## Migrator Interface
 - The contractID pattern:
   - "@mozilla.org/profile/migrator;1?app=browser&type=" + <MIGRATOR_KEY>
