@@ -77,4 +77,56 @@
       profileMigrator->migrate(aProfileStartup, aMigratorKey, aProfileToMigrate);
     ```
     
+- `MigrationUtils.startupMigration`
+  - DO NOT call it directly
+    ```js
+    /**
+     * Show the migration wizard for startup-migration.  This should only be
+     * called by ProfileMigrator (see ProfileMigrator.js), which implements
+     * nsIProfileMigrator.
+     * 
+     * ... ...
+     */
+    startupMigration: function MU_startupMigrator(aProfileStartup, aMigratorKey, aProfileToMigrate) {
+    ```
+
+  - Get the browser migrator
+    ```js
+    if (aMigratorKey) {
+      migrator = this.getMigrator(aMigratorKey);
+      if (!migrator) {
+        // aMigratorKey must point to a valid source, so, if it doesn't
+        // cleanup and throw.
+        this.finishMigration();
+        throw new Error("startMigration was asked to open auto-migrate from " +
+                        "a non-existent source: " + aMigratorKey);
+      }
+      migratorKey = aMigratorKey;
+      // No need for the source page to let user chose which browser to migrate
+      // since a given browser has been provided by `aMigratorKey`
+      skipSourcePage = true;
+    } else {
+      // No given target browser. Try to locate user's default browser
+      let defaultBrowserKey = this.getMigratorKeyForDefaultBrowser();
+      if (defaultBrowserKey) {
+        migrator = this.getMigrator(defaultBrowserKey);
+        if (migrator)
+          migratorKey = defaultBrowserKey;
+      }
+    }
+    ```
+    
+    - `MigrationUtils.getMigrator`
+      - Get mirgrator from the contract and the `nsIBrowserProfileMigrator` interface.
+      ```js
+      try {
+        // All migrators should implement this contract pattern and the interface.
+        migrator = Cc["@mozilla.org/profile/migrator;1?app=browser&type=" +
+                      aKey].createInstance(Ci.nsIBrowserProfileMigrator);
+      } catch (ex) { Cu.reportError(ex) }
+      this._migrators.set(aKey, migrator);
+      ```
+    
+  
+  
   
