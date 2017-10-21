@@ -1,7 +1,7 @@
 
 # Profile Migration
 
-## Triggering approaches
+## Triggering Approaches
 ### Triggered during startup by commandline
 - `$ <FF_FOLDER>/firefox --migration` (on Windows `-migration`)
 
@@ -117,16 +117,40 @@
     ```
     
     - `MigrationUtils.getMigrator`
-      - Get mirgrator from the contract and the `nsIBrowserProfileMigrator` interface.
-      ```js
-      try {
-        // All migrators should implement this contract pattern and the interface.
-        migrator = Cc["@mozilla.org/profile/migrator;1?app=browser&type=" +
-                      aKey].createInstance(Ci.nsIBrowserProfileMigrator);
-      } catch (ex) { Cu.reportError(ex) }
-      this._migrators.set(aKey, migrator);
-      ```
+      - Get mirgrator from the contractID and the `nsIBrowserProfileMigrator` interface.
+        See the Migrator Interface section.
+        ```js
+        try {
+          // All migrators should implement this contractID pattern and the interface.
+          migrator = Cc["@mozilla.org/profile/migrator;1?app=browser&type=" +
+                        aKey].createInstance(Ci.nsIBrowserProfileMigrator);
+        } catch (ex) { Cu.reportError(ex) }
+        this._migrators.set(aKey, migrator);
+        ```
     
   
   
   
+## Migrator Interface
+- The contractID pattern:
+  - "@mozilla.org/profile/migrator;1?app=browser&type=" + <MIGRATOR_KEY>
+  - MIGRATOR_KEY = "ie", "edge", "chrome", etc
+
+- The `nsIBrowserProfileMigrator` interface:
+  - Implemented by `MigratorPrototype` @ MigrationUtils.jsm
+    ```js
+    this.MigratorPrototype = {
+      QueryInterface: XPCOMUtils.generateQI([Ci.nsIBrowserProfileMigrator]),
+    ```
+
+- Example: Chrome migrator
+  ```js
+  function ChromeProfileMigrator() {
+    // ... ...
+  }
+  ChromeProfileMigrator.prototype = Object.create(MigratorPrototype);
+  ChromeProfileMigrator.prototype.classDescription = "Chrome Profile Migrator";
+  ChromeProfileMigrator.prototype.contractID = "@mozilla.org/profile/migrator;1?app=browser&type=chrome";
+  ChromeProfileMigrator.prototype.classID = Components.ID("{4cec1de4-1671-4fc3-a53e-6c539dc77a26}");
+  ```
+
