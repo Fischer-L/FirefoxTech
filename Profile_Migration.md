@@ -46,8 +46,8 @@
       }
     ```
 
-### Triggered after startup
-- Invoke the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` @ MigrationUtils.jsm
+### Triggered by user action
+- User clicks the button, which then invokes the migration wizard: `MigrationUtils.showMigrationWizard(aOpener, aParams)` @ MigrationUtils.jsm
   
 ### Triggered for profile reset
 - https://github.com/Fischer-L/FirefoxTech/blob/master/Profile_Reset.md
