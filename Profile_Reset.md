@@ -1,6 +1,8 @@
 # Profile Reset (Refresh)
 
 ## Reset by commandline
+- Refresh = Reset + Migration
+
 - `$ <FF_FOLDER>/firefox --reset-profile [--migration]` (On Windows -reset-profile [-migration])
   - `XREMain::XRE_main` calls `XREMain::XRE_mainStartup`
   
