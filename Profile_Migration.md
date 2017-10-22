@@ -294,8 +294,12 @@
     ```
     
     - `MigratorPrototype._getMaybeCachedResources`
-      - All browser migrators should implement `getResources` to get import resources
+      - All browser migrators should implement `getResources` to get import resources.
         ```js
+        // One resource is an obj of {
+        //   type: Indicate what type this resource is,
+        //   migrate(aCallback): Method in charge of importing actual files/data
+        // }
         this._resourcesByProfile[profileKey] = this.getResources(aProfile);
         ```
         
@@ -339,3 +343,48 @@
   ChromeProfileMigrator.prototype.classID = Components.ID("{4cec1de4-1671-4fc3-a53e-6c539dc77a26}");
   ```
 
+
+## ChromeProfileMigrator
+- Initialization
+  - Get Chrome's profile folder
+    ```js
+    function ChromeProfileMigrator() {
+      // `getDataFolder` returns an nsIFile instance of profiles on Windows or OSX or *nix system
+      let chromeUserDataFolder = getDataFolder(["Google", "Chrome"], ["Google", "Chrome"], ["google-chrome"]);
+      this._chromeUserDataFolder = chromeUserDataFolder.exists() ? chromeUserDataFolder : null;
+    }
+    ```
+  
+- `ChromeProfileMigrator.prototype.getResources`
+  ```js
+  // Clone Chrome's profile first. We don't want to mess the original one.
+  let profileFolder = this._chromeUserDataFolder.clone();
+  profileFolder.append(aProfile.id);
+  // Lets get Chrome's resources!!!
+  if (profileFolder.exists()) {
+    let possibleResources = [
+      GetBookmarksResource(profileFolder),
+      GetHistoryResource(profileFolder),
+      GetCookiesResource(profileFolder),
+    ];
+    if (AppConstants.platform == "win") {
+      possibleResources.push(GetWindowsPasswordsResource(profileFolder));
+    }
+    return possibleResources.filter(r => r != null);
+  }
+  ```
+
+  - `GetBookmarksResource`
+    ```js
+    function GetBookmarksResource(aProfileFolder) {
+      let bookmarksFile = aProfileFolder.clone();
+      bookmarksFile.append("Bookmarks");
+      if (!bookmarksFile.exists()) return null;
+      return {
+        type: MigrationUtils.resourceTypes.BOOKMARKS,
+        migrate(aCallback) { // ... ... }
+      };
+    }
+    ```
+    
+  
