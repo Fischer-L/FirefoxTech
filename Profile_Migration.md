@@ -304,21 +304,138 @@
         ```
         
       - See the ChromeProfileMigrator section for Chrome example
-      
+   
+  - Filter out the resources we want
     ```js
-    MigrationUtils.resourceTypes = {
-      // ALL:     Ci.nsIBrowserProfileMigrator.ALL
-      SETTINGS:   Ci.nsIBrowserProfileMigrator.SETTINGS,
-      COOKIES:    Ci.nsIBrowserProfileMigrator.COOKIES,
-      HISTORY:    Ci.nsIBrowserProfileMigrator.HISTORY,
-      FORMDATA:   Ci.nsIBrowserProfileMigrator.FORMDATA,
-      PASSWORDS:  Ci.nsIBrowserProfileMigrator.PASSWORDS,
-      BOOKMARKS:  Ci.nsIBrowserProfileMigrator.BOOKMARKS,
-      OTHERDATA:  Ci.nsIBrowserProfileMigrator.OTHERDATA,
-      SESSION:    Ci.nsIBrowserProfileMigrator.SESSION,
-    }
+    if (aItems != Ci.nsIBrowserProfileMigrator.ALL)
+      resources = resources.filter(r => aItems & r.type);
     ```
+     
+    - The Supported resource types
+      ```js
+      MigrationUtils.resourceTypes = {
+        // ALL:     Ci.nsIBrowserProfileMigrator.ALL
+        SETTINGS:   Ci.nsIBrowserProfileMigrator.SETTINGS,
+        COOKIES:    Ci.nsIBrowserProfileMigrator.COOKIES,
+        HISTORY:    Ci.nsIBrowserProfileMigrator.HISTORY,
+        FORMDATA:   Ci.nsIBrowserProfileMigrator.FORMDATA,
+        PASSWORDS:  Ci.nsIBrowserProfileMigrator.PASSWORDS,
+        BOOKMARKS:  Ci.nsIBrowserProfileMigrator.BOOKMARKS,
+        OTHERDATA:  Ci.nsIBrowserProfileMigrator.OTHERDATA,
+        SESSION:    Ci.nsIBrowserProfileMigrator.SESSION,
+      }
+      ```
+      
+  - Import the default bookmarks if this migration is during startup and not from the old FF profile
+    ```js
+     if (MigrationUtils.isStartupMigration && !this.startupOnlyMigrator) {
+       MigrationUtils.profileStartup.doStartup();
+       // First import the default bookmarks.
+       // Note: We do not need to do so for the Firefox migrator(=startupOnlyMigrator),
+       // as it just copies over the places database from another profile.
+       (async function() {
+        // ... ...
+ 
+        // Import the default bookmarks[1]. We ignore whether or not we succeed.
+        await BookmarkHTMLUtils.importFromURL(
+          "chrome://browser/locale/bookmarks.html", true).catch(r => r);
+    
+        // We'll tell nsBrowserGlue we've imported bookmarks, but before that
+        // we need to make sure we're going to know when it's finished initializing places
+        let placesInitedPromise = new Promise(resolve => {
+          let onPlacesInited = function() {
+            Services.obs.removeObserver(onPlacesInited, TOPIC_PLACES_DEFAULTS_FINISHED);
+            resolve();
+          };
+          Services.obs.addObserver(onPlacesInited, TOPIC_PLACES_DEFAULTS_FINISHED);
+        });
+        // This will tell `browserGlue` we've imported bookmarks.
+        // Have `browserGlue` know time to call `BrowserGlue.prototype._initPlaces`
+        browserGlue.observe(null, TOPIC_DID_IMPORT_BOOKMARKS, "");
+        await placesInitedPromise;
+        doMigrate();
+       })();
+       return;
+     }
+     doMigrate();
+    ```
+     
+    [1] The default bookmarks template: browser/locales/generic/profile/bookmarks.html.in
+     
+    - `BookmarkHTMLUtils.importFromURL`
+      ```js
+      let importer = new BookmarkImporter(aInitialImport);
+      await importer.importFromURL(aSpec);
+      ```
+      
+      - `BookmarkImporter.prototype.importFromURL`
+        This will load default bookmarks.html, then walk the DOM to get bookmark trees
+        
+      - `BookmarkImporter.prototype._importFromURL`
+        ```js
+        // Insert bookmark into the places db
+        await PlacesUtils.bookmarks.insertTree(tree);
+        ```
+    - `doMigrate`
+      ```js
+      // ... ...
+      
+      for (let [migrationType, itemResources] of resourcesGroupedByItems) {
+        // Start measuring the telemetry about migration time we spent
+        let stopwatchHistogramId = maybeStartTelemetryStopwatch(migrationType);
+        let {responsivenessMonitor, responsivenessHistogramId} = maybeStartResponsivenessMonitor(migrationType);
+        // Loop resource obj one by one 
+        for (let res of itemResources) {
+          let completeDeferred = PromiseUtils.defer();
+          let resourceDone = function(aSuccess) {
+            itemResources.delete(res);
+            itemSuccess |= aSuccess;
+            if (itemResources.size == 0) {
+              // ... ...
+              
+              // Send the telmetry back
+              if (stopwatchHistogramId) {
+                TelemetryStopwatch.finishKeyed(stopwatchHistogramId, browserKey);
+              }
+              maybeFinishResponsivenessMonitor(responsivenessMonitor, responsivenessHistogramId);
 
+              if (resourcesGroupedByItems.size == 0) {
+                collectQuantityTelemetry();
+                notify("Migration:Ended");
+              }
+            }
+            completeDeferred.resolve();
+          };
+          
+          // Finally we start migrating stuff...
+          try {
+            res.migrate(resourceDone); // See ChromeProfileMigrator section for example
+          } catch (ex) {
+            Cu.reportError(ex);
+            resourceDone(false);
+          }
+          
+          // ... ...
+          
+          // This is important!!!
+          // Importing is expensive. We have to yeild the way!!! 
+          // `unblockMainThread` will queue the next loop into the main thread.
+          await unblockMainThread();
+        }
+      }
+      ```
+      
+      - `unblockMainThread`
+        ```js
+        // Used to periodically give back control to the main-thread loop.
+        let unblockMainThread = function() {
+          return new Promise(resolve => {
+            Services.tm.dispatchToMainThread(resolve);
+          });
+        };
+        ```
+      
+    
 
 ## Migrator Interface
 - The contractID pattern:
@@ -387,4 +504,4 @@
     }
     ```
     
-  
+-
