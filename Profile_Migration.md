@@ -285,7 +285,7 @@
     this._migrator.migrate(this._itemsFlags, this._autoMigrate, this._selectedProfile);
     ```
 
-- `MigratorPrototype.migrate`
+- `Migrator.Prototype.migrate`
   - Get resources to migrate from other browser
     ```js
     let resources = this._getMaybeCachedResources(aProfile);
@@ -326,7 +326,7 @@
       }
       ```
       
-  - Import the default bookmarks if this migration is during startup and not from the old FF profile
+  - Before migrating, Import the default bookmarks if this migration is during startup and not from the old FF profile
     ```js
      if (MigrationUtils.isStartupMigration && !this.startupOnlyMigrator) {
        MigrationUtils.profileStartup.doStartup();
