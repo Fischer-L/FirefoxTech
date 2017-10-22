@@ -499,9 +499,46 @@
       if (!bookmarksFile.exists()) return null;
       return {
         type: MigrationUtils.resourceTypes.BOOKMARKS,
-        migrate(aCallback) { // ... ... }
+        migrate(aCallback) {
+          // ... ...
+        }
       };
     }
     ```
     
--
+- Migrate Chrome bookmarks resource
+  - Parse Chrome bookmark file that is JSON format
+    ```js
+    let bookmarkJSON = await OS.File.read(bookmarksFile.path, {encoding: "UTF-8"});
+    let roots = JSON.parse(bookmarkJSON).roots;
+    ```
+
+  - Importing bookmark bar items
+    ```js
+    if (roots.bookmark_bar.children && roots.bookmark_bar.children.length > 0) {
+      // Get Toolbar guid
+      let parentGuid = PlacesUtils.bookmarks.toolbarGuid;
+      // `convertBookmarks` will convert Chrome's bookmarks data into FF's bookmarks format
+      let bookmarks = convertBookmarks(roots.bookmark_bar.children, errorGatherer);
+      if (!MigrationUtils.isStartupMigration) {
+        // This will create the folder of "Bookmarks imported from Chrome" and get the guid of that folder
+        parentGuid = await MigrationUtils.createImportedBookmarksFolder("Chrome", parentGuid);
+      }
+      // `insertManyBookmarksWrapper` will call `PlacesUtils.bookmarks.insertTree`
+      // to save imported bookmarks in the folder of "Bookmarks imported from Chrome"
+      await MigrationUtils.insertManyBookmarksWrapper(bookmarks, parentGuid);
+    }
+    ```
+  
+  - Importing bookmark menu items
+    ```js
+    if (roots.other.children && roots.other.children.length > 0) {
+      // Get Bookmark menu guid
+      let parentGuid = PlacesUtils.bookmarks.menuGuid;
+      let bookmarks = convertBookmarks(roots.other.children, errorGatherer);
+      if (!MigrationUtils.isStartupMigration) {
+        parentGuid = await MigrationUtils.createImportedBookmarksFolder("Chrome", parentGuid);
+      }
+      await MigrationUtils.insertManyBookmarksWrapper(bookmarks, parentGuid);
+    }
+    ```
