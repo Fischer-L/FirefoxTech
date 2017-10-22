@@ -271,6 +271,49 @@
     this.onImportSourcePageShow();
     ```
 
+- `MigrationWizard.onMigratingPageShow`
+  - Decide the import items for user in auto migration
+    ```js
+    // When automigrating, show all of the data that can be received from this source.
+    if (this._autoMigrate)
+      this._itemsFlags = this._migrator.getMigrateData(this._selectedProfile, this._autoMigrate);
+    ```
+    
+- `MigrationWizard.onMigratingMigrate`
+  - Start migration
+    ```js
+    this._migrator.migrate(this._itemsFlags, this._autoMigrate, this._selectedProfile);
+    ```
+
+- `MigratorPrototype.migrate`
+  - Get resources to migrate from other browser
+    ```js
+    let resources = this._getMaybeCachedResources(aProfile);
+    if (resources.length == 0)
+      throw new Error("migrate called for a non-existent source");
+    ```
+    
+    - `MigratorPrototype._getMaybeCachedResources`
+      - All browser migrators should implement `getResources` to get import resources
+        ```js
+        this._resourcesByProfile[profileKey] = this.getResources(aProfile);
+        ```
+        
+      - See the ChromeProfileMigrator section for Chrome example
+      
+    ```js
+    MigrationUtils.resourceTypes = {
+      // ALL:     Ci.nsIBrowserProfileMigrator.ALL
+      SETTINGS:   Ci.nsIBrowserProfileMigrator.SETTINGS,
+      COOKIES:    Ci.nsIBrowserProfileMigrator.COOKIES,
+      HISTORY:    Ci.nsIBrowserProfileMigrator.HISTORY,
+      FORMDATA:   Ci.nsIBrowserProfileMigrator.FORMDATA,
+      PASSWORDS:  Ci.nsIBrowserProfileMigrator.PASSWORDS,
+      BOOKMARKS:  Ci.nsIBrowserProfileMigrator.BOOKMARKS,
+      OTHERDATA:  Ci.nsIBrowserProfileMigrator.OTHERDATA,
+      SESSION:    Ci.nsIBrowserProfileMigrator.SESSION,
+    }
+    ```
 
 
 ## Migrator Interface
