@@ -1,0 +1,21 @@
+# Enable debug version of the pre-build binary artifact
+
+# Artifact build
+# Automatically download and use compiled C++ components:
+ac_add_options --disable-debug
+ac_add_options --enable-artifact-builds
+mk_add_options MOZ_OBJDIR=./objdir-frontend
+ac_add_options --enable-application=browser
+
+# Build on OSX
+#mk_add_options MOZ_OBJDIR=./objdir-osx
+#mk_add_options MOZ_MAKE_FLAGS="-s -j4"
+#ac_add_options --with-ccache=/usr/local/bin/ccache
+#mk_add_options AUTOCONF=/usr/local/Cellar/autoconf213/2.13/bin/autoconf213
+
+# Icecc on OSX
+#mk_add_options MOZ_OBJDIR=./objdir-frontend
+#CC="/Users/foxbrush/SW/icecream/cc"
+#CXX="/Users/foxbrush/SW/icecream/c++"
+#mk_add_options MOZ_MAKE_FLAGS="-j100"
+#mk_add_options MOZ_OBJDIR=./objdir-osx
