@@ -309,6 +309,7 @@
 
 ### Section: -moz-deck and -moz-stack
 - Both are XUL display type. `display: -moz-deck` or `display: -moz-stack`.
+  
   [1] http://searchfox.org/mozilla-central/rev/7ba03cebf1dcf3b4c40c85a4efad42a5022cf1ec/layout/style/nsStyleConsts.h#423
   
   [2] http://searchfox.org/mozilla-central/rev/8efd128b48cdae3a6c6862795ce618aa1ca1c0b4/layout/base/nsCSSFrameConstructor.cpp#4419
