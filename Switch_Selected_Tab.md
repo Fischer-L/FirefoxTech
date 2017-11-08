@@ -131,6 +131,7 @@
       ```
     
       - `setTabState` of the tab switcher
+        - UPDATE: [Bug 1397426 - Make tab browser warming API not set the docshell to be active](https://bugzilla.mozilla.org/show_bug.cgi?id=1397426) changes the behavior here.
         - Activate the requested tab's docShell. See more details at the docShellIsActive section.
           ```js
           let browser = tab.linkedBrowser;
