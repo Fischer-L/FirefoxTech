@@ -226,6 +226,7 @@
   ```
 
 - TabParent::SetDocShellIsActive would receive the call from JS
+  - UPDATE: [Bug 1397426 - Make tab browser warming API not set the docshell to be active](https://bugzilla.mozilla.org/show_bug.cgi?id=1397426) changes the behavior of`SetDocShellIsActive` .
   - Send `Browser::Msg_SetDocShellIsActive__ID` msg to TabChild
     ```cpp
     // `mPreserveLayers` defaults to false and if false and deactiving, then tab would be hidden in the end.
